@@ -1,6 +1,5 @@
 package edu.itmo.isticketservice.controllers;
 
-import edu.itmo.isticketservice.dto.ErrorResponse;
 import edu.itmo.isticketservice.dto.JwtResponse;
 import edu.itmo.isticketservice.dto.SignInRequest;
 import edu.itmo.isticketservice.dto.SignUpRequest;

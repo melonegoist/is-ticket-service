@@ -29,7 +29,7 @@ public class AuthService {
                 .role(Role.ROLE_NON_AUTHORISED_USER)
                 .build();
 
-        userService.create(user);
+        userService.createUser(user);
 
         var jwtToken = jwtUtils.generateToken(user);
 
