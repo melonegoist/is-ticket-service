@@ -8,6 +8,7 @@ import edu.itmo.isticketservice.model.User;
 import edu.itmo.isticketservice.security.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,11 +25,11 @@ public class AuthService {
         var user = User.builder()
                 .username(signUpRequest.getUsername())
                 .email(signUpRequest.getEmail())
-                .password("/ todo")
-                .role(Role.ROLE_AUTHORISED_USER)
+                .password(passwordEncoder.encode(signUpRequest.getPassword()))
+                .role(Role.ROLE_NON_AUTHORISED_USER)
                 .build();
 
-        userService.createUser(user);
+        userService.create(user);
 
         var jwtToken = jwtUtils.generateToken(user);
 
@@ -36,16 +37,18 @@ public class AuthService {
     }
 
     public JwtResponse signIn(SignInRequest signInRequest) {
-        var user = userService.getUserByUsername(signInRequest.getUsername());
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                signInRequest.getUsername(),
+                signInRequest.getPassword()
+        ));
 
-        if (user.getPassword().equals(signInRequest.getPassword())) {
-            var jwtToken = jwtUtils.generateToken(user);
-            return new JwtResponse(jwtToken, 220, "jwt token generated successfully");
-        }
+        var user = userService
+                .userDetailsService()
+                .loadUserByUsername(signInRequest.getUsername());
 
-        throw new RuntimeException("Invalid username or password");
+        var jwtToken = jwtUtils.generateToken(user);
 
-        // todo
+        return  new JwtResponse(jwtToken, 220, "jwt token generated successfully");
     }
 
 }
