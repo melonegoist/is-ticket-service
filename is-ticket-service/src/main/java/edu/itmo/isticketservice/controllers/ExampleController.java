@@ -24,7 +24,7 @@ public class ExampleController {
         return "You are authenticated!";
     }
 
-    @GetMapping("/admin")
+    @GetMapping("/admin-test")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String admin() {
         return "Hello, admin!";
