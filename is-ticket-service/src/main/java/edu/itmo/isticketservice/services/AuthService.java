@@ -25,11 +25,11 @@ public class AuthService {
         var user = User.builder()
                 .username(signUpRequest.getUsername())
                 .email(signUpRequest.getEmail())
-                .password("/ todo")
-                .role(Role.ROLE_AUTHORISED_USER)
+                .password(passwordEncoder.encode(signUpRequest.getPassword()))
+                .role(Role.ROLE_NON_AUTHORISED_USER)
                 .build();
 
-        userService.createUser(user);
+        userService.create(user);
 
         var jwtToken = jwtUtils.generateToken(user);
 
@@ -48,7 +48,7 @@ public class AuthService {
 
         var jwtToken = jwtUtils.generateToken(user);
 
-        return new JwtResponse(jwtToken, 220, "jwt token generated successfully"); //todo
+        return  new JwtResponse(jwtToken, 220, "jwt token generated successfully");
     }
 
 }
