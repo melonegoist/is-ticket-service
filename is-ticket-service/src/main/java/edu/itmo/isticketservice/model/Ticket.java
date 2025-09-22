@@ -69,4 +69,9 @@ public class Ticket {
     @JoinColumn(name = "venue_id", nullable = false)
     private Venue venue;
 
+    @NotNull
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
 }
