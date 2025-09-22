@@ -35,6 +35,7 @@ public class GlobalExceptionHandler {
     validation error -- bad request
     500 internal server error
     expired jwt token
+    global
 
 
      */
