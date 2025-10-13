@@ -37,14 +37,20 @@ public class AuthService {
     }
 
     public JwtResponse signIn(SignInRequest signInRequest) {
+        System.out.println("got yeah");
+
+        System.out.println(signInRequest);
+
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                signInRequest.getUsername(),
+                signInRequest.getLogin(),
                 signInRequest.getPassword()
         ));
 
+        System.out.println("next step");
+
         var user = userService
                 .userDetailsService()
-                .loadUserByUsername(signInRequest.getUsername());
+                .loadUserByUsername(signInRequest.getLogin());
 
         var jwtToken = jwtUtils.generateToken(user);
 

@@ -13,7 +13,7 @@ public class TicketCreationResponse {
     private Integer id;
     private String name;
     private Coordinates coordinates;
-    private LocalDate created;
+    private LocalDate creationDate;
     private Person person;
     private Event event;
     private Integer price;

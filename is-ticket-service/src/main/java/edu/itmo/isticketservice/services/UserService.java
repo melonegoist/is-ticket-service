@@ -36,8 +36,20 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
     }
 
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Email not found"));
+    }
+
+    public User getUserByLogin(String login) {
+        return userRepository.findByUsernameOrEmail(login)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
     public UserDetailsService userDetailsService() {
-        return this::getUserByUsername;
+//        return this::getUserByUsername;
+
+        return new CustomUserDetailsService(userRepository);
     }
 
     public User getCurrentUser() {

@@ -40,9 +40,8 @@ public class Ticket {
     @Builder.Default
     private LocalDate creationDate = LocalDate.now();
 
-    @NotNull
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_id", nullable = false)
+    @JoinColumn(name = "person_id")
     private Person person;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -64,9 +63,8 @@ public class Ticket {
     @Positive
     private Integer number;
 
-    @NotNull
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "venue_id", nullable = false)
+    @JoinColumn(name = "venue_id")
     private Venue venue;
 
     @NotNull
