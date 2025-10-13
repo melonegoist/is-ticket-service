@@ -27,24 +27,26 @@ public class TicketService {
 
     // todo: maybe id better
     public TicketCreationResponse createTicket(TicketCreationRequest request, String username) {
-        Person owner = personRepository.findPersonByPassportID(String.valueOf(request.getPersonId()))
-                .orElseThrow(() -> new EntityNotFoundException("Owner not found" + request.getPersonId()));
+        System.out.println(request);
 
-        Venue venue = venueRepository.findById(request.getVenueId())
-                .orElseThrow(() -> new EntityNotFoundException("Venue not found" + request.getVenueId()));
+//        Person owner = personRepository.findPersonByPassportID(String.valueOf(request.getPersonId()))
+//                .orElseThrow(() -> new EntityNotFoundException("Owner not found " + request.getPersonId()));
 
-        Event event = eventRepository.findById(request.getEventId())
-                .orElse(null);
+//        Venue venue = venueRepository.findById(request.getVenueId())
+//                .orElseThrow(() -> new EntityNotFoundException("Venue not found " + request.getVenueId()));
+//
+//        Event event = eventRepository.findById(request.getEventId())
+//                .orElse(null);
 
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("User not found" + username));
+                .orElseThrow(() -> new EntityNotFoundException("User not found " + username));
 
         Ticket ticket = Ticket.builder()
                 .name(request.getName())
                 .coordinates(request.getCoordinates())
-                .person(owner)
-                .event(event)
-                .venue(venue)
+//                .person(owner) // todo: maybe better
+//                .event(event) todo: maybe better
+//                .venue(venue) todo: maybe better
                 .price(request.getPrice())
                 .type(request.getTicketType())
                 .discount(request.getDiscount())

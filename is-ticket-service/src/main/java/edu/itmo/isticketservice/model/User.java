@@ -1,6 +1,7 @@
 package edu.itmo.isticketservice.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +32,7 @@ public class User implements UserDetails {
 
     @NotNull
     @Column(unique = true, nullable = false)
+    @Email
     private String email;
 
     @NotNull

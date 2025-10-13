@@ -9,9 +9,7 @@ version = '0.0.1'
 description = 'is-ticket-service'
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
+    sourceCompatibility = '21'
 }
 
 configurations {

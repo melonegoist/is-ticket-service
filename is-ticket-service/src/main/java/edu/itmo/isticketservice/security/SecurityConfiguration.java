@@ -1,5 +1,6 @@
 package edu.itmo.isticketservice.security;
 
+import edu.itmo.isticketservice.services.CustomUserDetailsService;
 import edu.itmo.isticketservice.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +30,7 @@ public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserService userService;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
@@ -47,10 +49,12 @@ public class SecurityConfiguration {
                         .requestMatchers("/swagger-ui/**", "/swagger-recourses/*", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/example/test").permitAll()
                         .requestMatchers("/endpoint", "/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/tickets").permitAll() // TODO: remove this line
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .userDetailsService(customUserDetailsService);
 
         return http.build();
     }

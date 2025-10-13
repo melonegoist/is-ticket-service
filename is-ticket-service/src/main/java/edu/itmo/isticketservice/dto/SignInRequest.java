@@ -6,10 +6,10 @@ import lombok.Data;
 @Data
 public class SignInRequest {
 
-    @NotBlank
-    private String username;
+    @NotBlank(message = "Username or email is required!")
+    private String login;
 
-    @NotBlank
+    @NotBlank(message = "Password is required!")
     private String password;
 
 }
