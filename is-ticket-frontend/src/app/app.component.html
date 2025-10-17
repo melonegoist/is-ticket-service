@@ -1,0 +1,35 @@
+<div class="app-container">
+  @if (isLoggedIn()) {
+    <nav class="navbar">
+      <div class="nav-brand">
+        <h1 (click)="navigateTo('/tickets')" class="brand-link">🎫 Ticket System</h1>
+      </div>
+
+      <div class="nav-links">
+        <a (click)="navigateTo('/tickets')" class="nav-link">Tickets</a>
+        <a (click)="navigateTo('/special-operations')" class="nav-link">Special Operations</a>
+        @if (getCurrentUser()?.role === 'ROLE_ADMIN') {
+          <a (click)="navigateTo('/admin')" class="nav-link">Admin Panel</a>
+        }
+      </div>
+
+      <div class="nav-user">
+        <span class="user-info">
+          {{ getCurrentUser()?.username }}
+          <span class="user-role">({{ getCurrentUser()?.role }})</span>
+        </span>
+        <button (click)="logout()" class="btn-logout">Logout</button>
+      </div>
+    </nav>
+  }
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  @if (isLoggedIn()) {
+    <footer class="footer">
+      <p>&copy; 2025 Ticket Management System. All rights reserved.</p>
+    </footer>
+  }
+</div>
