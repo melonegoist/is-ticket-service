@@ -1,0 +1,178 @@
+<div class="ticket-list-container">
+  <div class="header">
+    <h1>Ticket Management System</h1>
+    <div class="user-info">
+      <span class="user-welcome">Welcome, {{ getCurrentUser()?.username }} ({{ getCurrentUser()?.role }})</span>
+      <button (click)="logout()" class="btn-logout">Logout</button>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="Search tickets by name..."
+        [value]="searchTerm()"
+        (input)="searchTerm.set($any($event.target).value)"
+        (keyup.enter)="onSearch()">
+      <button (click)="onSearch()" class="btn-search">
+        <span class="search-icon">🔍</span>
+        Search
+      </button>
+    </div>
+
+    <div class="actions">
+      <button (click)="router.navigate(['/tickets/new'])" class="btn-primary">
+        <span class="btn-icon">+</span>
+        Create New Ticket
+      </button>
+      <button (click)="router.navigate(['/special-operations'])" class="btn-secondary">
+        <span class="btn-icon">⚡</span>
+        Special Operations
+      </button>
+      @if (getCurrentUser()?.role === 'ROLE_ADMIN') {
+        <button (click)="router.navigate(['/admin'])" class="btn-secondary">
+          <span class="btn-icon">👑</span>
+          Admin Panel
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="table-container">
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <span>Loading tickets...</span>
+      </div>
+    } @else {
+      <div class="table-wrapper">
+        <table class="glass-table">
+          <thead>
+          <tr>
+            <th (click)="onSort('id')" class="sortable">
+              ID {{ getSortIcon('id') }}
+            </th>
+            <th (click)="onSort('name')" class="sortable">
+              Name {{ getSortIcon('name') }}
+            </th>
+            <th (click)="onSort('price')" class="sortable">
+              Price {{ getSortIcon('price') }}
+            </th>
+            <th>Type</th>
+            <th (click)="onSort('discount')" class="sortable">
+              Discount {{ getSortIcon('discount') }}
+            </th>
+            <th (click)="onSort('createdBy')" class="sortable">
+              Created By {{ getSortIcon('createdBy') }}
+            </th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (ticket of tickets(); track ticket.id) {
+              <tr>
+                <td class="ticket-id">{{ ticket.id }}</td>
+                <td class="ticket-name">{{ ticket.name }}</td>
+                <td class="ticket-price">${{ ticket.price }}</td>
+                <td class="ticket-type">
+                  <span class="type-badge" [class]="ticket.ticketType || 'no-type'">
+                    {{ ticket.ticketType || 'N/A' }}
+                  </span>
+                </td>
+                <td class="ticket-discount">{{ ticket.discount }}%</td>
+                <td class="ticket-owner">{{ ticket.createdBy }}</td>
+                <td class="actions">
+                  <button (click)="viewTicket(ticket)" class="btn-action btn-view" title="View details">
+                    👁️
+                  </button>
+                  @if (canEdit(ticket)) {
+                    <button (click)="editTicket(ticket)" class="btn-action btn-edit" title="Edit ticket">
+                      ✏️
+                    </button>
+                    <button (click)="deleteTicket(ticket)" class="btn-action btn-delete" title="Delete ticket">
+                      🗑️
+                    </button>
+                  } @else {
+                    <span class="no-permission" title="You can only edit your own tickets">🔒</span>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="no-data">
+                  <div class="empty-state">
+                    <span class="empty-icon">🎫</span>
+                    <p>No tickets found</p>
+                    @if (searchTerm()) {
+                      <button (click)="searchTerm.set(''); onSearch()" class="btn-link">
+                        Clear search
+                      </button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  @if (totalPages() > 1) {
+    <div class="pagination">
+      <button
+        (click)="onPageChange(0)"
+        [disabled]="currentPage() === 0"
+        class="btn-pagination"
+        title="First page">
+        ««
+      </button>
+      <button
+        (click)="onPageChange(currentPage() - 1)"
+        [disabled]="currentPage() === 0"
+        class="btn-pagination"
+        title="Previous page">
+        «
+      </button>
+
+      @for (page of getPageNumbers(); track page) {
+        <button
+          (click)="onPageChange(page)"
+          [class.active]="page === currentPage()"
+          class="btn-pagination page-number">
+          {{ page + 1 }}
+        </button>
+      }
+
+      <button
+        (click)="onPageChange(currentPage() + 1)"
+        [disabled]="currentPage() >= totalPages() - 1"
+        class="btn-pagination"
+        title="Next page">
+        »
+      </button>
+      <button
+        (click)="onPageChange(totalPages() - 1)"
+        [disabled]="currentPage() >= totalPages() - 1"
+        class="btn-pagination"
+        title="Last page">
+        »»
+      </button>
+
+      <span class="page-info">
+        Page {{ currentPage() + 1 }} of {{ totalPages() }}
+        ({{ totalElements() }} total tickets)
+      </span>
+    </div>
+  }
+
+  @if (totalElements() > 0 && !isLoading()) {
+    <div class="summary">
+      Showing {{ tickets().length }} of {{ totalElements() }} tickets
+      @if (searchTerm()) {
+        <span class="search-info">for "{{ searchTerm() }}"</span>
+      }
+    </div>
+  }
+</div>

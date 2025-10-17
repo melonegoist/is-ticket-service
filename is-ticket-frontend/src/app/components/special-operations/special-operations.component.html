@@ -1,0 +1,271 @@
+<div class="special-operations-container">
+  <div class="header">
+    <h1>Special Operations</h1>
+    <div class="user-info">
+      Welcome, {{ getCurrentUser()?.username }}
+      <button (click)="navigateToTickets()" class="btn-secondary">Back to Tickets</button>
+    </div>
+  </div>
+
+  <div class="operations-grid">
+    <!-- Operation 1: Search by name containing -->
+    <div class="operation-card">
+      <h3>1. Search by Name Containing</h3>
+      <div class="operation-form">
+        <div class="form-group">
+          <label>Substring to search:</label>
+          <input
+            type="text"
+            [value]="searchSubstring()"
+            (input)="searchSubstring.set($any($event.target).value)"
+            placeholder="Enter substring...">
+        </div>
+        <button
+          (click)="searchByNameContaining()"
+          class="btn-primary"
+          [disabled]="!searchSubstring() || isLoading1()">
+          {{ isLoading1() ? 'Searching...' : 'Search' }}
+        </button>
+        <button
+          (click)="resetOperation(1)"
+          class="btn-secondary">
+          Clear
+        </button>
+      </div>
+
+      @if (searchResults1().length > 0) {
+        <div class="results">
+          <h4>Found {{ searchResults1().length }} tickets:</h4>
+          <div class="tickets-list">
+            @for (ticket of searchResults1(); track ticket.id) {
+              <div class="ticket-item">
+                <strong>{{ ticket.name }}</strong> - ${{ ticket.price }} (ID: {{ ticket.id }})
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Operation 2: Search by name starting with -->
+    <div class="operation-card">
+      <h3>2. Search by Name Starting With</h3>
+      <div class="operation-form">
+        <div class="form-group">
+          <label>Prefix:</label>
+          <input
+            type="text"
+            [value]="searchPrefix()"
+            (input)="searchPrefix.set($any($event.target).value)"
+            placeholder="Enter prefix...">
+        </div>
+        <button
+          (click)="searchByNameStartingWith()"
+          class="btn-primary"
+          [disabled]="!searchPrefix() || isLoading2()">
+          {{ isLoading2() ? 'Searching...' : 'Search' }}
+        </button>
+        <button
+          (click)="resetOperation(2)"
+          class="btn-secondary">
+          Clear
+        </button>
+      </div>
+
+      @if (searchResults2().length > 0) {
+        <div class="results">
+          <h4>Found {{ searchResults2().length }} tickets:</h4>
+          <div class="tickets-list">
+            @for (ticket of searchResults2(); track ticket.id) {
+              <div class="ticket-item">
+                <strong>{{ ticket.name }}</strong> - ${{ ticket.price }} (ID: {{ ticket.id }})
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Operation 3: Search by number less than -->
+    <div class="operation-card">
+      <h3>3. Search by Number Less Than</h3>
+      <div class="operation-form">
+        <div class="form-group">
+          <label>Maximum number:</label>
+          <input
+            type="number"
+            [value]="searchNumber()"
+            (input)="searchNumber.set(+$any($event.target).value)"
+            placeholder="Enter number...">
+        </div>
+        <button
+          (click)="searchByNumberLessThan()"
+          class="btn-primary"
+          [disabled]="!searchNumber() || isLoading3()">
+          {{ isLoading3() ? 'Searching...' : 'Search' }}
+        </button>
+        <button
+          (click)="resetOperation(3)"
+          class="btn-secondary">
+          Clear
+        </button>
+      </div>
+
+      @if (searchResults3().length > 0) {
+        <div class="results">
+          <h4>Found {{ searchResults3().length }} tickets:</h4>
+          <div class="tickets-list">
+            @for (ticket of searchResults3(); track ticket.id) {
+              <div class="ticket-item">
+                <strong>{{ ticket.name }}</strong> - #{{ ticket.number }} (ID: {{ ticket.id }})
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Operation 4: Sell ticket -->
+    <div class="operation-card">
+      <h3>4. Sell Ticket</h3>
+      <div class="operation-form">
+        <div class="form-group">
+          <label>Select Ticket:</label>
+          <select
+            [value]="selectedTicketId()"
+            (change)="selectedTicketId.set(+$any($event.target).value)">
+            <option [value]="null">Choose ticket...</option>
+            @for (ticket of availableTickets(); track ticket.id) {
+              <option [value]="ticket.id">
+                {{ ticket.name }} - ${{ ticket.price }} (ID: {{ ticket.id }})
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Sell Price:</label>
+          <input
+            type="number"
+            [value]="sellPrice()"
+            (input)="sellPrice.set(+$any($event.target).value)"
+            placeholder="Enter price...">
+        </div>
+
+        <div class="form-group">
+          <label>Person Passport ID:</label>
+          <input
+            type="text"
+            [value]="sellPerson().passportID"
+            (input)="updateSellPersonField('passportID', $any($event.target).value)"
+            placeholder="Enter passport ID...">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Eye Color:</label>
+            <select
+              [value]="sellPerson().eyeColor"
+              (change)="updateSellPersonField('eyeColor', $any($event.target).value)">
+              @for (color of colors; track color) {
+                <option [value]="color">{{ color }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Nationality:</label>
+            <select
+              [value]="sellPerson().nationality"
+              (change)="updateSellPersonField('nationality', $any($event.target).value)">
+              @for (country of countries; track country) {
+                <option [value]="country">{{ country }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <button
+          (click)="sellTicket()"
+          class="btn-primary"
+          [disabled]="!selectedTicketId() || !sellPrice() || !sellPerson().passportID || isSelling()">
+          {{ isSelling() ? 'Selling...' : 'Sell Ticket' }}
+        </button>
+        <button
+          (click)="resetOperation(4)"
+          class="btn-secondary">
+          Clear
+        </button>
+      </div>
+
+      @if (sellResult()) {
+        <div class="results">
+          <h4>Sell Result:</h4>
+          @if (sellResult().error) {
+            <div class="error-message">{{ sellResult().error }}</div>
+          } @else {
+            <div class="success-message">
+              Ticket sold successfully! New price: ${{ sellResult().price }}
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Operation 5: Create discounted ticket -->
+    <div class="operation-card">
+      <h3>5. Create Discounted Ticket</h3>
+      <div class="operation-form">
+        <div class="form-group">
+          <label>Select Original Ticket:</label>
+          <select
+            [value]="originalTicketId()"
+            (change)="originalTicketId.set(+$any($event.target).value)">
+            <option [value]="null">Choose ticket...</option>
+            @for (ticket of availableTickets(); track ticket.id) {
+              <option [value]="ticket.id">
+                {{ ticket.name }} - ${{ ticket.price }} (ID: {{ ticket.id }})
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Discount Percent:</label>
+          <input
+            type="number"
+            [value]="discountPercent()"
+            (input)="discountPercent.set(+$any($event.target).value)"
+            placeholder="Enter discount %..."
+            min="1"
+            max="100">
+        </div>
+
+        <button
+          (click)="createDiscountedTicket()"
+          class="btn-primary"
+          [disabled]="!originalTicketId() || !discountPercent() || isCreatingDiscounted()">
+          {{ isCreatingDiscounted() ? 'Creating...' : 'Create Discounted Ticket' }}
+        </button>
+        <button
+          (click)="resetOperation(5)"
+          class="btn-secondary">
+          Clear
+        </button>
+      </div>
+
+      @if (discountedTicketResult()) {
+        <div class="results">
+          <h4>Discounted Ticket Created:</h4>
+          <div class="ticket-item">
+            <strong>{{ discountedTicketResult()!.name }}</strong><br>
+            Original Price: ${{ discountedTicketResult()!.price / (1 + discountPercent()! / 100) | number:'1.2-2' }}<br>
+            Discount: {{ discountPercent() }}%<br>
+            New Price: ${{ discountedTicketResult()!.price }}<br>
+            ID: {{ discountedTicketResult()!.id }}
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

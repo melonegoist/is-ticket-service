@@ -1,0 +1,230 @@
+<div class="form-container">
+  <div class="glass-card">
+    <div class="header">
+      <h2>{{ isEdit() ? 'Edit Ticket' : 'Create New Ticket' }}</h2>
+      <div class="user-info">
+        {{ getCurrentUser()?.username }}
+        <button (click)="onCancel()" class="btn-secondary">Cancel</button>
+      </div>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="ticket-form">
+      <!-- Basic Information Section -->
+      <div class="form-section">
+        <h3>Basic Information</h3>
+
+        <div class="form-group">
+          <label for="name">Ticket Name *</label>
+          <input
+            type="text"
+            id="name"
+            [value]="ticketData().name"
+            (input)="updateTicketField('name', $any($event.target).value)"
+            placeholder="Enter ticket name"
+            required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="price">Price ($) *</label>
+            <input
+              type="number"
+              id="price"
+              [value]="ticketData().price"
+              (input)="updateTicketField('price', +$any($event.target).value)"
+              min="1"
+              placeholder="Enter price"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="discount">Discount (%) *</label>
+            <input
+              type="number"
+              id="discount"
+              [value]="ticketData().discount"
+              (input)="updateTicketField('discount', +$any($event.target).value)"
+              min="1"
+              max="100"
+              placeholder="Enter discount"
+              required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="type">Ticket Type</label>
+          <select
+            id="type"
+            [value]="ticketData().ticketType"
+            (change)="updateTicketField('ticketType', $any($event.target).value)">
+            <option [value]="undefined">Select ticket type</option>
+            @for (type of ticketTypes; track type) {
+              <option [value]="type">{{ type }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="number">Ticket Number</label>
+          <input
+            type="number"
+            id="number"
+            [value]="ticketData().number"
+            (input)="updateTicketField('number', +$any($event.target).value)"
+            min="1"
+            placeholder="Optional ticket number">
+        </div>
+      </div>
+
+      <!-- Coordinates Section -->
+      <div class="form-section">
+        <h3>Coordinates</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="coordX">X Coordinate</label>
+            <input
+              type="number"
+              id="coordX"
+              [value]="ticketData().coordinates?.x"
+              (input)="updateCoordinates('x', +$any($event.target).value)"
+              placeholder="Enter X coordinate">
+          </div>
+
+          <div class="form-group">
+            <label for="coordY">Y Coordinate *</label>
+            <input
+              type="number"
+              id="coordY"
+              [value]="ticketData().coordinates?.y"
+              (input)="updateCoordinates('y', +$any($event.target).value)"
+              placeholder="Enter Y coordinate"
+              required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Person Information Section -->
+      <div class="form-section">
+        <h3>Person Information</h3>
+
+        <div class="form-group">
+          <label for="passportID">Passport ID *</label>
+          <input
+            type="text"
+            id="passportID"
+            [value]="ticketData().person?.passportID"
+            (input)="updatePerson('passportID', $any($event.target).value)"
+            placeholder="Enter passport ID"
+            maxlength="43"
+            required>
+          <small class="hint">Max 43 characters</small>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="eyeColor">Eye Color *</label>
+            <select
+              id="eyeColor"
+              [value]="ticketData().person?.eyeColor"
+              (change)="updatePerson('eyeColor', $any($event.target).value)">
+              @for (color of colors; track color) {
+                <option [value]="color">{{ color }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="hairColor">Hair Color</label>
+            <select
+              id="hairColor"
+              [value]="ticketData().person?.hairColor"
+              (change)="updatePerson('hairColor', $any($event.target).value)">
+              <option [value]="undefined">Select hair color</option>
+              @for (color of colors; track color) {
+                <option [value]="color">{{ color }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="nationality">Nationality *</label>
+            <select
+              id="nationality"
+              [value]="ticketData().person?.nationality"
+              (change)="updatePerson('nationality', $any($event.target).value)">
+              @for (country of countries; track country) {
+                <option [value]="country">{{ country }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Venue Information Section -->
+      <div class="form-section">
+        <h3>Venue Information</h3>
+
+        <div class="form-group">
+          <label for="venueName">Venue Name *</label>
+          <input
+            type="text"
+            id="venueName"
+            [value]="ticketData().venue?.name"
+            (input)="updateVenue('name', $any($event.target).value)"
+            placeholder="Enter venue name"
+            required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="capacity">Capacity *</label>
+            <input
+              type="number"
+              id="capacity"
+              [value]="ticketData().venue?.capacity"
+              (input)="updateVenue('capacity', +$any($event.target).value)"
+              min="1"
+              placeholder="Enter capacity"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="venueType">Venue Type *</label>
+            <select
+              id="venueType"
+              [value]="ticketData().venue?.type"
+              (change)="updateVenue('type', $any($event.target).value)">
+              @for (type of venueTypes; track type) {
+                <option [value]="type">{{ type }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="street">Street Address</label>
+          <input
+            type="text"
+            id="street"
+            [value]="ticketData().venue?.address?.street"
+            (input)="updateAddress('street', $any($event.target).value)"
+            placeholder="Enter street address">
+        </div>
+      </div>
+
+      @if (error()) {
+        <div class="error-message">{{ error() }}</div>
+      }
+
+      <div class="form-actions">
+        <button type="button" (click)="onCancel()" class="btn-secondary">
+          Cancel
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="isLoading()">
+          {{ isLoading() ? 'Saving...' : (isEdit() ? 'Update Ticket' : 'Create Ticket') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,468 @@
+.ticket-list-container {
+  padding: 20px;
+  background: linear-gradient(135deg, black 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 15px;
+
+  h1 {
+    color: white;
+    font-weight: 300;
+    margin: 0;
+    font-size: 2rem;
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    .user-welcome {
+      color: white;
+      font-weight: 300;
+    }
+  }
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 15px;
+
+  .search-box {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+    input {
+      padding: 12px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      min-width: 300px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      &:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.6);
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+}
+
+.table-container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.glass-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: white;
+  min-width: 800px;
+
+  th, td {
+    padding: 16px 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  th {
+    background: rgba(255, 255, 255, 0.15);
+    font-weight: 500;
+    font-size: 14px;
+    user-select: none;
+
+    &.sortable {
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.25);
+      }
+    }
+  }
+
+  tbody tr {
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  .ticket-id {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: #e1b0ff;
+  }
+
+  .ticket-name {
+    font-weight: 500;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ticket-price {
+    font-weight: 600;
+    color: #2ecc71;
+  }
+
+  .ticket-discount {
+    color: #f39c12;
+  }
+
+  .ticket-owner {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 13px;
+  }
+
+  .type-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+
+    &.VIP {
+      background: rgba(155, 89, 182, 0.3);
+      color: #e1b0ff;
+    }
+
+    &.BUDGETARY {
+      background: rgba(52, 152, 219, 0.3);
+      color: #85c1e9;
+    }
+
+    &.CHEAP {
+      background: rgba(46, 204, 113, 0.3);
+      color: #7dcea0;
+    }
+
+    &.no-type {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+    min-width: 120px;
+  }
+
+  .no-data {
+    text-align: center;
+    padding: 60px 20px;
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      color: rgba(255, 255, 255, 0.7);
+
+      .empty-icon {
+        font-size: 3rem;
+        opacity: 0.5;
+      }
+
+      p {
+        margin: 0;
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  padding: 60px 20px;
+  color: white;
+
+  .spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Button Styles
+.btn-primary, .btn-secondary, .btn-logout, .btn-search, .btn-pagination, .btn-link {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  color: white;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(155, 89, 182, 0.4);
+  }
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.btn-logout {
+  background: rgba(231, 76, 60, 0.2);
+  color: #ff6b6b;
+  border: 1px solid rgba(231, 76, 60, 0.3);
+
+  &:hover {
+    background: rgba(231, 76, 60, 0.3);
+  }
+}
+
+.btn-search {
+  background: rgba(52, 152, 219, 0.2);
+  color: white;
+  border: 1px solid rgba(52, 152, 219, 0.3);
+
+  &:hover {
+    background: rgba(52, 152, 219, 0.3);
+  }
+}
+
+.btn-action {
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  background: transparent;
+
+  &.btn-view {
+    color: #3498db;
+
+    &:hover {
+      background: rgba(52, 152, 219, 0.2);
+    }
+  }
+
+  &.btn-edit {
+    color: #f39c12;
+
+    &:hover {
+      background: rgba(243, 156, 18, 0.2);
+    }
+  }
+
+  &.btn-delete {
+    color: #e74c3c;
+
+    &:hover {
+      background: rgba(231, 76, 60, 0.2);
+    }
+  }
+}
+
+.no-permission {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 14px;
+  cursor: not-allowed;
+}
+
+.btn-pagination {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 12px;
+  min-width: 40px;
+
+  &:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &.active {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    border-color: #9b59b6;
+  }
+
+  &.page-number {
+    font-weight: 500;
+  }
+}
+
+.btn-link {
+  background: transparent;
+  color: #e1b0ff;
+  text-decoration: underline;
+  padding: 8px 16px;
+
+  &:hover {
+    color: white;
+  }
+}
+
+// Pagination and Summary
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 25px 0;
+  flex-wrap: wrap;
+}
+
+.page-info {
+  color: white;
+  font-size: 14px;
+  margin-left: 20px;
+  font-weight: 300;
+}
+
+.summary {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  margin-top: 15px;
+
+  .search-info {
+    color: #e1b0ff;
+    font-style: italic;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .ticket-list-container {
+    padding: 15px;
+  }
+
+  .header {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+
+    h1 {
+      font-size: 1.5rem;
+    }
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+
+    .search-box {
+      input {
+        min-width: auto;
+        flex: 1;
+      }
+    }
+
+    .actions {
+      justify-content: center;
+    }
+  }
+
+  .glass-table {
+    th, td {
+      padding: 12px 8px;
+      font-size: 13px;
+    }
+
+    .actions {
+      flex-direction: column;
+      gap: 4px;
+    }
+  }
+
+  .pagination {
+    gap: 4px;
+
+    .page-info {
+      margin-left: 10px;
+      font-size: 12px;
+    }
+  }
+
+  .btn-primary, .btn-secondary, .btn-logout, .btn-search {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ticket-list-container {
+    padding: 10px;
+  }
+
+  .glass-table {
+    min-width: 600px;
+  }
+
+  .btn-icon {
+    display: none;
+  }
+}
