@@ -18,7 +18,7 @@ export interface AuthResponse { // todo: check
 })
 export class AuthService {
   private currentUser = signal<User | null>(null);
-  private apiUrl = 'http://localhost:8080/auth';
+  private apiUrl = 'http://localhost:7861/auth';
   private tokenExpirationTimer: any;
 
   constructor(private http: HttpClient) {}
@@ -31,19 +31,19 @@ export class AuthService {
             response.username,
             response.role as 'ROLE_USER' || 'ROLE_ADMIN',
             response.token,
-            100000 // todo
+            100000000 // todo
           );
         })
       );
   }
 
-  register(username: string, password: string, isAdmin: boolean = false, email: string): Observable<any> { // todo
-    return this.http.post(`${this.apiUrl}/sign-up`, { username, password, email });
+  register(username: string, password: string, isAdmin: boolean = false, email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/sign-up`, { username, password, email, isAdmin });
   }
 
   setCurrentUser(user: User): void {
     this.currentUser.set(user);
-    localStorage.setItem('userData', JSON.stringify(user)); // todo
+    localStorage.setItem('userData', JSON.stringify(user));
   }
 
   getCurrentUser() {
