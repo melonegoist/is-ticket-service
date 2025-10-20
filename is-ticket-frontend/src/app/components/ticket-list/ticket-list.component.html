@@ -1,10 +1,10 @@
 <div class="ticket-list-container">
   <div class="header">
-    <h1>Ticket Management System</h1>
-    <div class="user-info">
-      <span class="user-welcome">Welcome, {{ getCurrentUser()?.username }} ({{ getCurrentUser()?.role }})</span>
-      <button (click)="logout()" class="btn-logout">Logout</button>
-    </div>
+    <h1>Ticket Management</h1>
+<!--    <div class="user-info">-->
+<!--      <span class="user-welcome">Welcome, {{ getCurrentUser()?.username }} ({{ getCurrentUser()?.role }})</span>-->
+<!--      <button (click)="logout()" class="btn-logout">Logout</button>-->
+<!--    </div>-->
   </div>
 
   <div class="toolbar">
@@ -70,34 +70,37 @@
           </tr>
           </thead>
           <tbody>
-            @for (ticket of tickets(); track ticket.id) {
-              <tr>
-                <td class="ticket-id">{{ ticket.id }}</td>
-                <td class="ticket-name">{{ ticket.name }}</td>
-                <td class="ticket-price">${{ ticket.price }}</td>
-                <td class="ticket-type">
+            @for (ticket of tickets(); track ticket?.id) {
+              @if (ticket != null) {
+                <tr>
+                  <td class="ticket-id">{{ ticket.id }}</td>
+                  <td class="ticket-name">{{ ticket.name }}</td>
+                  <td class="ticket-price">${{ ticket.price }}</td>
+                  <td class="ticket-type">
                   <span class="type-badge" [class]="ticket.ticketType || 'no-type'">
                     {{ ticket.ticketType || 'N/A' }}
                   </span>
-                </td>
-                <td class="ticket-discount">{{ ticket.discount }}%</td>
-                <td class="ticket-owner">{{ ticket.createdBy }}</td>
-                <td class="actions">
-                  <button (click)="viewTicket(ticket)" class="btn-action btn-view" title="View details">
-                    👁️
-                  </button>
-                  @if (canEdit(ticket)) {
-                    <button (click)="editTicket(ticket)" class="btn-action btn-edit" title="Edit ticket">
-                      ✏️
+                  </td>
+                  <td class="ticket-discount">{{ ticket.discount }}%</td>
+                  <td class="ticket-owner">{{ ticket.createdBy }}</td>
+                  <td class="actions">
+                    <button (click)="viewTicket(ticket)" class="btn-action btn-view" title="View details">
+                      👁️
                     </button>
-                    <button (click)="deleteTicket(ticket)" class="btn-action btn-delete" title="Delete ticket">
-                      🗑️
-                    </button>
-                  } @else {
-                    <span class="no-permission" title="You can only edit your own tickets">🔒</span>
-                  }
-                </td>
-              </tr>
+                    @if (canEdit(ticket)) {
+                      <button (click)="editTicket(ticket)" class="btn-action btn-edit" title="Edit ticket">
+                        ✏️
+                      </button>
+                      <button (click)="deleteTicket(ticket)" class="btn-action btn-delete" title="Delete ticket">
+                        🗑️
+                      </button>
+                    } @else {
+                      <span class="no-permission" title="You can only edit your own tickets">🔒</span>
+                    }
+                  </td>
+                </tr>
+              }
+
             } @empty {
               <tr>
                 <td colspan="7" class="no-data">

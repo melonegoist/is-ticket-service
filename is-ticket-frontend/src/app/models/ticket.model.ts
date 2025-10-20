@@ -34,7 +34,6 @@ export interface Venue {
   name: string;
   capacity: number;
   type: VenueType;
-  address: Address;
 }
 
 export interface Ticket {
@@ -42,6 +41,8 @@ export interface Ticket {
   name: string;
   coordinates: Coordinates;
   created: string;
+  personId: string;
+  venueId: number;
   person: Person;
   event?: Event;
   price: number;
