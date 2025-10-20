@@ -20,6 +20,10 @@ public class TicketCreationRequest {
     @NotNull(message = "owner is required!")
     private Long personId;
 
+    private Person person;
+    private Venue venue;
+    private Event event;
+
     private Long eventId;
 
     @NotNull(message = "price is required!")
