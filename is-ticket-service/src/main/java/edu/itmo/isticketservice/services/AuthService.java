@@ -22,11 +22,12 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public JwtResponse signUp(SignUpRequest signUpRequest) {
+        System.out.println(signUpRequest);
         var user = User.builder()
                 .username(signUpRequest.getUsername())
                 .email(signUpRequest.getEmail())
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
-                .role(Role.ROLE_NON_AUTHORISED_USER)
+                .role(signUpRequest.isAdmin() ? Role.ROLE_ADMIN : Role.ROLE_NON_AUTHORISED_USER)
                 .build();
 
         userService.createUser(user);
@@ -37,16 +38,10 @@ public class AuthService {
     }
 
     public JwtResponse signIn(SignInRequest signInRequest) {
-        System.out.println("got yeah");
-
-        System.out.println(signInRequest);
-
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 signInRequest.getLogin(),
                 signInRequest.getPassword()
         ));
-
-        System.out.println("next step");
 
         var user = userService
                 .userDetailsService()
@@ -54,7 +49,7 @@ public class AuthService {
 
         var jwtToken = jwtUtils.generateToken(user);
 
-        return  new JwtResponse(jwtToken, 220, "jwt token generated successfully");
+        return new JwtResponse(jwtToken, 220, "jwt token generated successfully");
     }
 
 }
