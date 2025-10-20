@@ -49,7 +49,6 @@ public class SecurityConfiguration {
                         .requestMatchers("/swagger-ui/**", "/swagger-recourses/*", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/example/test").permitAll()
                         .requestMatchers("/endpoint", "/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/tickets").permitAll() // TODO: remove this line
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
