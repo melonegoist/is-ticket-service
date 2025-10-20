@@ -9,7 +9,7 @@ version = '0.0.1'
 description = 'is-ticket-service'
 
 java {
-    sourceCompatibility = '21'
+    sourceCompatibility = '17'
 }
 
 configurations {
