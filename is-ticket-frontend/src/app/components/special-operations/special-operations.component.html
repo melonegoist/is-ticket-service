@@ -94,14 +94,14 @@
           <label>Maximum number:</label>
           <input
             type="number"
-            [value]="searchNumber()"
-            (input)="searchNumber.set(+$any($event.target).value)"
+            [value]="searchNumber1()"
+            (input)="searchNumber1.set(+$any($event.target).value)"
             placeholder="Enter number...">
         </div>
         <button
           (click)="searchByNumberLessThan()"
           class="btn-primary"
-          [disabled]="!searchNumber() || isLoading3()">
+          [disabled]="!searchNumber1() || isLoading3()">
           {{ isLoading3() ? 'Searching...' : 'Search' }}
         </button>
         <button
@@ -125,9 +125,48 @@
       }
     </div>
 
-    <!-- Operation 4: Sell ticket -->
+    <!-- Operation 4: Search by number greater than -->
     <div class="operation-card">
-      <h3>4. Sell Ticket</h3>
+      <h3>4. Search by Number Greater Than</h3>
+      <div class="operation-form">
+        <div class="form-group">
+          <label>Maximum number:</label>
+          <input
+            type="number"
+            [value]="searchNumber2()"
+            (input)="searchNumber2.set(+$any($event.target).value)"
+            placeholder="Enter number...">
+        </div>
+        <button
+          (click)="searchByNumberGreaterThan()"
+          class="btn-primary"
+          [disabled]="!searchNumber2() || isLoading4()">
+          {{ isLoading4() ? 'Searching...' : 'Search' }}
+        </button>
+        <button
+          (click)="resetOperation(4)"
+          class="btn-secondary">
+          Clear
+        </button>
+      </div>
+
+      @if (searchResults4().length > 0) {
+        <div class="results">
+          <h4>Found {{ searchResults4().length }} tickets:</h4>
+          <div class="tickets-list">
+            @for (ticket of searchResults4(); track ticket.id) {
+              <div class="ticket-item">
+                <strong>{{ ticket.name }}</strong> - #{{ ticket.number }} (ID: {{ ticket.id }})
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Operation 5: Sell ticket -->
+    <div class="operation-card">
+      <h3>5. Sell Ticket</h3>
       <div class="operation-form">
         <div class="form-group">
           <label>Select Ticket:</label>
@@ -162,27 +201,27 @@
         </div>
 
         <div class="form-row">
-          <div class="form-group">
-            <label>Eye Color:</label>
-            <select
-              [value]="sellPerson().eyeColor"
-              (change)="updateSellPersonField('eyeColor', $any($event.target).value)">
-              @for (color of colors; track color) {
-                <option [value]="color">{{ color }}</option>
-              }
-            </select>
-          </div>
+<!--          <div class="form-group">-->
+<!--            <label>Eye Color:</label>-->
+<!--            <select-->
+<!--              [value]="sellPerson().eyeColor"-->
+<!--              (change)="updateSellPersonField('eyeColor', $any($event.target).value)">-->
+<!--              @for (color of colors; track color) {-->
+<!--                <option [value]="color">{{ color }}</option>-->
+<!--              }-->
+<!--            </select>-->
+<!--          </div>-->
 
-          <div class="form-group">
-            <label>Nationality:</label>
-            <select
-              [value]="sellPerson().nationality"
-              (change)="updateSellPersonField('nationality', $any($event.target).value)">
-              @for (country of countries; track country) {
-                <option [value]="country">{{ country }}</option>
-              }
-            </select>
-          </div>
+<!--          <div class="form-group">-->
+<!--            <label>Nationality:</label>-->
+<!--            <select-->
+<!--              [value]="sellPerson().nationality"-->
+<!--              (change)="updateSellPersonField('nationality', $any($event.target).value)">-->
+<!--              @for (country of countries; track country) {-->
+<!--                <option [value]="country">{{ country }}</option>-->
+<!--              }-->
+<!--            </select>-->
+<!--          </div>-->
         </div>
 
         <button
@@ -192,7 +231,7 @@
           {{ isSelling() ? 'Selling...' : 'Sell Ticket' }}
         </button>
         <button
-          (click)="resetOperation(4)"
+          (click)="resetOperation(5)"
           class="btn-secondary">
           Clear
         </button>
@@ -212,9 +251,9 @@
       }
     </div>
 
-    <!-- Operation 5: Create discounted ticket -->
+    <!-- Operation 6: Create discounted ticket -->
     <div class="operation-card">
-      <h3>5. Create Discounted Ticket</h3>
+      <h3>6. Create Discounted Ticket</h3>
       <div class="operation-form">
         <div class="form-group">
           <label>Select Original Ticket:</label>
@@ -259,7 +298,7 @@
           <h4>Discounted Ticket Created:</h4>
           <div class="ticket-item">
             <strong>{{ discountedTicketResult()!.name }}</strong><br>
-            Original Price: ${{ discountedTicketResult()!.price / (1 + discountPercent()! / 100) | number:'1.2-2' }}<br>
+            Original Price: ${{ discountedTicketResult()!.price / (1 - discountPercent()! / 100) | number:'1.2-2' }}<br>
             Discount: {{ discountPercent() }}%<br>
             New Price: ${{ discountedTicketResult()!.price }}<br>
             ID: {{ discountedTicketResult()!.id }}
@@ -267,5 +306,20 @@
         </div>
       }
     </div>
+
+    <div class="operation-card">
+      <h3>7. Search Sum Of Ticket Numbers</h3>
+      <div class="operation-form">
+        <button
+          (click)="getTicketsNumberSum()"
+          class="btn-primary"
+          [disabled]="isLoading7()">
+          {{ isLoading7() ? 'Searching...' : 'Search' }}
+        </button>
+      </div>
+
+      <p>{{numberSum()}}</p>
+    </div>
+
   </div>
 </div>

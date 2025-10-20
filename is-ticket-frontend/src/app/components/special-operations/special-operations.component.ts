@@ -25,11 +25,16 @@ export class SpecialOperationsComponent implements OnInit {
   isLoading2 = signal(false);
 
   // Operation 3: Search by number less than
-  searchNumber = signal<number | null>(null);
+  searchNumber1 = signal<number | null>(null);
   searchResults3 = signal<Ticket[]>([]);
   isLoading3 = signal(false);
 
-  // Operation 4: Sell ticket
+  // Operation 4: Search by number greater than
+  searchNumber2 = signal<number | null>(null);
+  searchResults4 = signal<Ticket[]>([]);
+  isLoading4 = signal(false);
+
+  // Operation 5: Sell ticket
   selectedTicketId = signal<number | null>(null);
   sellPrice = signal<number | null>(null);
   sellPerson = signal<Partial<Person>>({
@@ -41,11 +46,15 @@ export class SpecialOperationsComponent implements OnInit {
   isSelling = signal(false);
   sellResult = signal<any>(null);
 
-  // Operation 5: Create discounted ticket
+  // Operation 6: Create discounted ticket
   originalTicketId = signal<number | null>(null);
   discountPercent = signal<number | null>(null);
   isCreatingDiscounted = signal(false);
   discountedTicketResult = signal<Ticket | null>(null);
+
+  // Operation 7
+  numberSum = signal<number | null>(null);
+  isLoading7 = signal(false);
 
   // Available tickets for selection
   availableTickets = signal<Ticket[]>([]);
@@ -80,7 +89,7 @@ export class SpecialOperationsComponent implements OnInit {
     }
 
     this.isLoading1.set(true);
-    this.ticketService.findByNameContaining(this.searchSubstring()).subscribe({
+    this.ticketService.findByNameContains(this.searchSubstring()).subscribe({
       next: (tickets) => {
         this.searchResults1.set(tickets);
         this.isLoading1.set(false);
@@ -99,7 +108,7 @@ export class SpecialOperationsComponent implements OnInit {
     }
 
     this.isLoading2.set(true);
-    this.ticketService.findByNameStartingWith(this.searchPrefix()).subscribe({
+    this.ticketService.findByNameStartsWith(this.searchPrefix()).subscribe({
       next: (tickets) => {
         this.searchResults2.set(tickets);
         this.isLoading2.set(false);
@@ -113,12 +122,12 @@ export class SpecialOperationsComponent implements OnInit {
 
   // Operation 3: Search by number less than
   searchByNumberLessThan(): void {
-    if (!this.searchNumber()) {
+    if (!this.searchNumber1()) {
       return;
     }
 
     this.isLoading3.set(true);
-    this.ticketService.findByNumberLessThan(this.searchNumber()!).subscribe({
+    this.ticketService.findByNumberLessThan(this.searchNumber1()!).subscribe({
       next: (tickets) => {
         this.searchResults3.set(tickets);
         this.isLoading3.set(false);
@@ -130,7 +139,26 @@ export class SpecialOperationsComponent implements OnInit {
     });
   }
 
-  // Operation 4: Sell ticket
+  // Operation 4: Search by number less than
+  searchByNumberGreaterThan(): void {
+    if (!this.searchNumber2()) {
+      return;
+    }
+
+    this.isLoading4.set(true);
+    this.ticketService.findByNumberGreaterThan(this.searchNumber2()!).subscribe({
+      next: (tickets) => {
+        this.searchResults4.set(tickets);
+        this.isLoading4.set(false);
+      },
+      error: (error) => {
+        console.error('Error searching tickets:', error);
+        this.isLoading4.set(false);
+      }
+    });
+  }
+
+  // Operation 5: Sell ticket
   sellTicket(): void {
     if (!this.selectedTicketId() || !this.sellPrice() || !this.sellPerson().passportID) {
       return;
@@ -140,7 +168,7 @@ export class SpecialOperationsComponent implements OnInit {
     this.ticketService.sellTicket(
       this.selectedTicketId()!,
       this.sellPrice()!,
-      this.sellPerson()
+      this.sellPerson().passportID
     ).subscribe({
       next: (result) => {
         this.sellResult.set(result);
@@ -155,7 +183,7 @@ export class SpecialOperationsComponent implements OnInit {
     });
   }
 
-  // Operation 5: Create discounted ticket
+  // Operation 6: Create discounted ticket
   createDiscountedTicket(): void {
     if (!this.originalTicketId() || !this.discountPercent()) {
       return;
@@ -176,6 +204,14 @@ export class SpecialOperationsComponent implements OnInit {
         this.isCreatingDiscounted.set(false);
       }
     });
+  }
+
+  getTicketsNumberSum(): void {
+    this.ticketService.getTicketsNumberSum().subscribe({
+      next: (number) => {
+        this.numberSum.set(number);
+      }
+    })
   }
 
   // Helper methods
@@ -205,8 +241,12 @@ export class SpecialOperationsComponent implements OnInit {
         this.searchResults2.set([]);
         break;
       case 3:
-        this.searchNumber.set(null);
+        this.searchNumber1.set(null);
         this.searchResults3.set([]);
+        break;
+      case 4:
+        this.searchNumber2.set(null);
+        this.searchResults4.set([]);
         break;
       case 4:
         this.selectedTicketId.set(null);
