@@ -19,6 +19,7 @@ public class Venue {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotNull
     private Long id;
 
     @NotBlank
@@ -32,11 +33,6 @@ public class Venue {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private VenueType venueType;
-
-    @NotNull
-    @ManyToOne(cascade = CascadeType.ALL,  fetch = FetchType.LAZY) // Many venues - one address == each venue has one address, but each address may have a lot of venues on it
-    @JoinColumn(name = "address_id",  nullable = false)
-    private Address address;
+    private VenueType type;
 
 }

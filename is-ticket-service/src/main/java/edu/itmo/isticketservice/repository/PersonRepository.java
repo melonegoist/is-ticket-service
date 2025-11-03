@@ -11,5 +11,6 @@ public interface PersonRepository extends JpaRepository<Person,Long> {
 
     Optional<Person> findPersonByPassportID(String passportID);
     boolean existsPersonByPassportID(String passportID);
+    void deleteByPassportID(String passportID);
 
 }

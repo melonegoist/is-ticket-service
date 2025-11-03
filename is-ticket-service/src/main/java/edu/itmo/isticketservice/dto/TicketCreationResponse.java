@@ -14,6 +14,8 @@ public class TicketCreationResponse {
     private String name;
     private Coordinates coordinates;
     private LocalDate creationDate;
+    private String personId;
+    private long venueId;
     private Person person;
     private Event event;
     private Integer price;

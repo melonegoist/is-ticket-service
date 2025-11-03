@@ -25,10 +25,8 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in")
-    public JwtResponse signIn(@RequestBody @Valid SignInRequest signInRequest) {
-        return authService.signIn(signInRequest);
-
-        // todo
+    public ResponseEntity<JwtResponse> signIn(@RequestBody @Valid SignInRequest signInRequest) {
+        return ResponseEntity.ok(authService.signIn(signInRequest));
     }
 
 }
