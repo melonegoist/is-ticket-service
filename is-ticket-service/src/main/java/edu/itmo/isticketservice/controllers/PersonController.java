@@ -33,13 +33,14 @@ public class PersonController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPerson);
     }
 
+    //todo
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePerson(@PathVariable String id) {
         if (personService.deletePerson(id)) {
             return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
         }
+
+        return ResponseEntity.notFound().build();
     }
 
 }

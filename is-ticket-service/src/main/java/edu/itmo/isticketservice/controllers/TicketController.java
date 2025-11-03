@@ -40,9 +40,6 @@ public class TicketController {
     ) {
         TicketCreationResponse response = ticketService.createTicket(request, userDetails.getUsername());
 
-        System.out.println("CHECKPOINT 1");
-        System.out.println(request.toString());
-
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -72,6 +69,7 @@ public class TicketController {
     @GetMapping("/{id}")
     public ResponseEntity<TicketCreationResponse> getTicket(@PathVariable Integer id) {
         TicketCreationResponse ticket = ticketService.getTicketById(id);
+
         return ResponseEntity.ok(ticket);
     }
 
@@ -99,31 +97,40 @@ public class TicketController {
     // 1. Вернуть массив объектов, значение поля name которых содержит заданную подстроку
     @GetMapping("/search/name-contains")
     public ResponseEntity<List<Ticket>> findTicketsByNameContains(
-            @RequestParam @NotBlank String substring) {
+            @RequestParam @NotBlank String substring
+    ) {
         List<Ticket> tickets = ticketService.findTicketsByNameContaining(substring);
+
         return ResponseEntity.ok(tickets);
     }
 
     // 2. Вернуть массив объектов, значение поля name которых начинается с заданной подстроки
     @GetMapping("/search/name-starts-with")
     public ResponseEntity<List<Ticket>> findTicketsByNameStartsWith(
-            @RequestParam @NotBlank String prefix) {
+            @RequestParam @NotBlank String prefix
+    ) {
         List<Ticket> tickets = ticketService.findTicketsByNameStartsWith(prefix);
+
         return ResponseEntity.ok(tickets);
     }
 
     // 3. Вернуть массив объектов, значение поля number которых меньше заданного
     @GetMapping("/search/number-less-than")
     public ResponseEntity<List<Ticket>> findTicketsByNumberLessThan(
-            @RequestParam @Positive Integer number) {
+            @RequestParam @Positive Integer number
+    ) {
         List<Ticket> tickets = ticketService.findTicketsByNumberLessThan(number);
+
         return ResponseEntity.ok(tickets);
     }
 
+    // 4. Вернуть массив объектов, значение поля number которых больше заданного
     @GetMapping("/search/number-greater-than")
     public ResponseEntity<List<Ticket>> findTicketsByNumberGreaterThan(
-            @RequestParam @Positive Integer number) {
+            @RequestParam @Positive Integer number
+    ) {
         List<Ticket> tickets = ticketService.findTicketsByNumberGreaterThan(number);
+
         return ResponseEntity.ok(tickets);
     }
 
@@ -133,22 +140,28 @@ public class TicketController {
     public ResponseEntity<TicketCreationResponse> cloneTicketWithDiscount(
             @PathVariable Integer ticketId,
             @RequestBody @Valid CloneTicketRequest request,
-            Principal principal) {
+            Principal principal
+    ) {
         TicketCreationResponse clonedTicket = ticketService.cloneTicketWithDiscount(ticketId, request, principal.getName());
+
         return ResponseEntity.status(HttpStatus.CREATED).body(clonedTicket);
     }
 
+    // 6. Посчитать сумму количества всех билетов
     @GetMapping("/search/get-tickets-number-sum")
     public ResponseEntity<Integer> getTicketsNumberSum() {
         return ResponseEntity.ok(ticketService.getSumOfTicketsNumber());
     }
 
+    // 7. Продать билет
     @PostMapping("/{ticketId}/sell")
     public ResponseEntity<TicketCreationResponse> sellTicket(
             @PathVariable Integer ticketId,
             @RequestBody @Valid SellTicketRequest request,
-            Principal principal) {
+            Principal principal
+    ) {
         TicketCreationResponse soldTicket = ticketService.sellTicket(ticketId, request, principal.getName());
+
         return ResponseEntity.ok(soldTicket);
     }
 
