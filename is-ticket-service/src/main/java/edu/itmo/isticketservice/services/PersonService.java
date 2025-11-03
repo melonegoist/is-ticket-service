@@ -8,6 +8,7 @@ import edu.itmo.isticketservice.repository.PersonRepository;
 import edu.itmo.isticketservice.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -42,19 +43,19 @@ public class PersonService {
         return persons;
     }
 
+    @Transactional
     public boolean deletePerson(String passportID) {
         if (personRepository.existsPersonByPassportID(passportID)) {
-            personRepository.deleteByPassportID(passportID);
-
             ticketRepository.findTicketByPersonPassportID(passportID).forEach(ticket -> {
                 ticketRepository.deleteById(ticket.getId());
             });
 
+            personRepository.deleteByPassportID(passportID);
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     private PersonCreationResponse toDto(Person person) {

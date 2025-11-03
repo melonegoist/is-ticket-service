@@ -22,4 +22,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     List<Ticket> findByUser(User user);
     List<Ticket> findByPriceLessThan(Integer price);
 
+    void deleteByVenue_Id(Long venueId);
+
 }

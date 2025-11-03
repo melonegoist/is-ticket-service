@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -272,6 +273,13 @@ public class TicketService {
             return null;
         } else {
             return convertToResponse(ticket);
+        }
+    }
+
+    @Transactional
+    public void deleteTicketsByVenueId(Long venueId) {
+        if (venueId != null) {
+            ticketRepository.deleteByVenue_Id(venueId);
         }
     }
 
