@@ -1,0 +1,194 @@
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  //background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, black 0%, #764ba2 100%);
+}
+
+.navbar {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 70px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0px;
+  z-index: 9;
+}
+
+.nav-brand {
+  .brand-link {
+    color: white;
+    font-weight: 300;
+    font-size: 1.5rem;
+    margin: 0;
+    cursor: pointer;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #e1b0ff;
+    }
+  }
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+
+  .nav-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 300;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #e1b0ff;
+    }
+
+    &.active {
+      background: rgba(155, 89, 182, 0.3);
+      color: #e1b0ff;
+    }
+  }
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  .user-info {
+    color: white;
+    font-weight: 300;
+    font-size: 14px;
+
+    .user-role {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 12px;
+      text-transform: lowercase;
+    }
+  }
+}
+
+.btn-logout {
+  background: rgba(231, 76, 60, 0.2);
+  color: #ff6b6b;
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+
+  &:hover {
+    background: rgba(231, 76, 60, 0.3);
+    transform: translateY(-1px);
+  }
+}
+
+.main-content {
+  flex: 1;
+  padding: 0;
+}
+
+.footer {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 20px;
+  text-align: center;
+  color: white;
+  font-weight: 300;
+  font-size: 14px;
+
+  p {
+    margin: 0;
+    opacity: 0.8;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 15px;
+    height: 60px;
+    flex-wrap: wrap;
+    height: auto;
+    padding: 10px 15px;
+  }
+
+  .nav-brand {
+    .brand-link {
+      font-size: 1.3rem;
+    }
+  }
+
+  .nav-links {
+    gap: 15px;
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    margin-top: 10px;
+
+    .nav-link {
+      font-size: 14px;
+      padding: 6px 12px;
+    }
+  }
+
+  .nav-user {
+    gap: 10px;
+
+    .user-info {
+      font-size: 13px;
+    }
+  }
+
+  .btn-logout {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 8px 10px;
+  }
+
+  .nav-links {
+    gap: 10px;
+
+    .nav-link {
+      font-size: 13px;
+      padding: 5px 10px;
+    }
+  }
+
+  .nav-user {
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-end;
+
+    .user-info {
+      font-size: 12px;
+    }
+  }
+
+  .footer {
+    padding: 15px;
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,217 @@
+<div class="admin-panel-container">
+  <div class="header">
+    <h1>Administrator Panel</h1>
+    <div class="user-info">
+      Welcome, {{ getCurrentUser()?.username }}
+      <button (click)="navigateToTickets()" class="btn-secondary">Back to Tickets</button>
+    </div>
+  </div>
+
+  <div class="admin-content">
+    <!-- Navigation Tabs -->
+    <div class="tab-navigation">
+      <button
+        (click)="setActiveTab('registrations')"
+        [class.active]="activeTab() === 'registrations'"
+        class="tab-btn">
+        📋 Registration Requests
+        @if (systemStats().pendingRegistrations > 0) {
+          <span class="badge">{{ systemStats().pendingRegistrations }}</span>
+        }
+      </button>
+      <button
+        (click)="setActiveTab('stats')"
+        [class.active]="activeTab() === 'stats'"
+        class="tab-btn">
+        📊 System Statistics
+      </button>
+      <button
+        (click)="setActiveTab('users')"
+        [class.active]="activeTab() === 'users'"
+        class="tab-btn">
+        👥 User Management
+      </button>
+    </div>
+
+    <!-- Content Area -->
+    <div class="tab-content">
+      @if (isLoading()) {
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <span>Loading admin data...</span>
+        </div>
+      }
+
+      @if (activeTab() === 'registrations') {
+        <div class="registrations-tab">
+          <h2>Pending Registration Requests</h2>
+
+          @if (pendingRegistrations().length === 0) {
+            <div class="empty-state">
+              <span class="empty-icon">✅</span>
+              <p>No pending registration requests</p>
+              <small>All registration requests have been processed.</small>
+            </div>
+          } @else {
+            <div class="registrations-list">
+              @for (registration of pendingRegistrations(); track registration.id) {
+                <div class="registration-card">
+                  <div class="registration-info">
+                    <div class="user-details">
+                      <h4>{{ registration.username }}</h4>
+                      <div class="meta-info">
+                        <span class="role-badge" [class]="getRoleBadgeClass(registration.requestedRole)">
+                          {{ getRoleText(registration.requestedRole) }}
+                        </span>
+                        <span class="registration-date">
+                          Requested on {{ formatDate(registration.registrationDate) }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="registration-actions">
+                      <button
+                        (click)="approveRegistration(registration)"
+                        class="btn-success"
+                        [disabled]="isLoading()">
+                        ✅ Approve
+                      </button>
+                      <button
+                        (click)="rejectRegistration(registration)"
+                        class="btn-danger"
+                        [disabled]="isLoading()">
+                        ❌ Reject
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          <!-- All Registrations History -->
+          <div class="registrations-history">
+            <h3>Registration History</h3>
+            <div class="history-table">
+              <table class="glass-table">
+                <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Requested Role</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                  @for (registration of allRegistrations(); track registration.id) {
+                    <tr>
+                      <td class="username">{{ registration.username }}</td>
+                      <td>
+                        <span class="role-badge" [class]="getRoleBadgeClass(registration.requestedRole)">
+                          {{ getRoleText(registration.requestedRole) }}
+                        </span>
+                      </td>
+                      <td class="date">{{ formatDate(registration.registrationDate) }}</td>
+                      <td>
+                        <span class="status-badge" [class]="getStatusBadgeClass(registration.status)">
+                          {{ getStatusText(registration.status) }}
+                        </span>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (activeTab() === 'stats') {
+        <div class="stats-tab">
+          <h2>System Statistics</h2>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">🎫</div>
+              <div class="stat-info">
+                <div class="stat-value">{{ systemStats().totalTickets }}</div>
+                <div class="stat-label">Total Tickets</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">👥</div>
+              <div class="stat-info">
+                <div class="stat-value">{{ systemStats().totalUsers }}</div>
+                <div class="stat-label">Total Users</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">⏳</div>
+              <div class="stat-info">
+                <div class="stat-value">{{ systemStats().pendingRegistrations }}</div>
+                <div class="stat-label">Pending Requests</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">👑</div>
+              <div class="stat-info">
+                <div class="stat-value">{{ systemStats().activeAdmins }}</div>
+                <div class="stat-label">Active Admins</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="charts-section">
+            <h3>System Overview</h3>
+            <div class="chart-placeholder">
+              <div class="chart-info">
+                <span class="chart-icon">📈</span>
+                <p>System analytics and charts would be displayed here</p>
+                <small>Integration with analytics service required</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (activeTab() === 'users') {
+        <div class="users-tab">
+          <h2>User Management</h2>
+
+          <div class="users-actions">
+            <button class="btn-primary">
+              <span class="btn-icon">➕</span>
+              Add New User
+            </button>
+            <button class="btn-secondary">
+              <span class="btn-icon">📧</span>
+              Bulk Operations
+            </button>
+          </div>
+
+          <div class="users-table-container">
+            <div class="table-actions">
+              <input type="text" placeholder="Search users..." class="search-input">
+              <button class="btn-secondary">Filter</button>
+            </div>
+
+            <div class="coming-soon">
+              <div class="coming-soon-content">
+                <span class="coming-soon-icon">🚧</span>
+                <h3>User Management Coming Soon</h3>
+                <p>Advanced user management features are under development.</p>
+                <small>This will include user role management, activity tracking, and more.</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (error()) {
+        <div class="error-message">{{ error() }}</div>
+      }
+    </div>
+  </div>
+</div>
