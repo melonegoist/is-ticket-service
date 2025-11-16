@@ -1,4 +1,4 @@
-package edu.itmo.isticketservice.services;
+package edu.itmo.isticketservice.service;
 
 import edu.itmo.isticketservice.dto.JwtResponse;
 import edu.itmo.isticketservice.dto.SignInRequest;

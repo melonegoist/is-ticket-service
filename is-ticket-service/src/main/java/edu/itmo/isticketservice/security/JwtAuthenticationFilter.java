@@ -1,6 +1,6 @@
 package edu.itmo.isticketservice.security;
 
-import edu.itmo.isticketservice.services.UserService;
+import edu.itmo.isticketservice.service.UserService;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

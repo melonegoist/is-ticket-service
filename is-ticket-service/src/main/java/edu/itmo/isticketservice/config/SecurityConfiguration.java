@@ -1,7 +1,8 @@
-package edu.itmo.isticketservice.security;
+package edu.itmo.isticketservice.config;
 
-import edu.itmo.isticketservice.services.CustomUserDetailsService;
-import edu.itmo.isticketservice.services.UserService;
+import edu.itmo.isticketservice.security.JwtAuthenticationFilter;
+import edu.itmo.isticketservice.service.CustomUserDetailsService;
+import edu.itmo.isticketservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

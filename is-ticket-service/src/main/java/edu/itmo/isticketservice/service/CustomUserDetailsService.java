@@ -1,6 +1,5 @@
-package edu.itmo.isticketservice.services;
+package edu.itmo.isticketservice.service;
 
-import edu.itmo.isticketservice.model.User;
 import edu.itmo.isticketservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

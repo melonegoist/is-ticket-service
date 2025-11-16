@@ -1,4 +1,4 @@
-package edu.itmo.isticketservice.services;
+package edu.itmo.isticketservice.service;
 
 import edu.itmo.isticketservice.dto.VenueCreationRequest;
 import edu.itmo.isticketservice.dto.VenueCreationResponse;

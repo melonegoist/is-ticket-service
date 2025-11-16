@@ -1,9 +1,9 @@
-package edu.itmo.isticketservice.controllers;
+package edu.itmo.isticketservice.controller;
 
 import edu.itmo.isticketservice.dto.VenueCreationRequest;
 import edu.itmo.isticketservice.dto.VenueCreationResponse;
 import edu.itmo.isticketservice.model.Venue;
-import edu.itmo.isticketservice.services.VenueService;
+import edu.itmo.isticketservice.service.VenueService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

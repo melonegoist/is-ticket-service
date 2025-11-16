@@ -1,6 +1,6 @@
-package edu.itmo.isticketservice.services;
+package edu.itmo.isticketservice.service;
 
-import edu.itmo.isticketservice.exceptions.UserAlreadyExistsException;
+import edu.itmo.isticketservice.exception.UserAlreadyExistsException;
 import edu.itmo.isticketservice.model.User;
 import edu.itmo.isticketservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package edu.itmo.isticketservice.exceptions;
+package edu.itmo.isticketservice.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 

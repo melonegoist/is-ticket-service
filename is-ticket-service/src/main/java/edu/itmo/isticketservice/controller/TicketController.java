@@ -1,11 +1,11 @@
-package edu.itmo.isticketservice.controllers;
+package edu.itmo.isticketservice.controller;
 
 import edu.itmo.isticketservice.dto.CloneTicketRequest;
 import edu.itmo.isticketservice.dto.SellTicketRequest;
 import edu.itmo.isticketservice.dto.TicketCreationRequest;
 import edu.itmo.isticketservice.dto.TicketCreationResponse;
 import edu.itmo.isticketservice.model.Ticket;
-import edu.itmo.isticketservice.services.TicketService;
+import edu.itmo.isticketservice.service.TicketService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;

@@ -1,9 +1,9 @@
-package edu.itmo.isticketservice.controllers;
+package edu.itmo.isticketservice.controller;
 
 import edu.itmo.isticketservice.dto.JwtResponse;
 import edu.itmo.isticketservice.dto.SignInRequest;
 import edu.itmo.isticketservice.dto.SignUpRequest;
-import edu.itmo.isticketservice.services.AuthService;
+import edu.itmo.isticketservice.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

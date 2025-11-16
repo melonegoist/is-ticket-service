@@ -1,9 +1,8 @@
-package edu.itmo.isticketservice.services;
+package edu.itmo.isticketservice.service;
 
 import edu.itmo.isticketservice.dto.PersonCreationRequest;
 import edu.itmo.isticketservice.dto.PersonCreationResponse;
 import edu.itmo.isticketservice.model.Person;
-import edu.itmo.isticketservice.model.Ticket;
 import edu.itmo.isticketservice.repository.PersonRepository;
 import edu.itmo.isticketservice.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
