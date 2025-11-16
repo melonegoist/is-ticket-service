@@ -1,4 +1,4 @@
-package edu.itmo.isticketservice.websocket;
+package edu.itmo.isticketservice.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
