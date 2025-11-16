@@ -30,9 +30,7 @@ public class TicketService {
     private final PersonRepository personRepository;
 
     // todo: add some exceptions
-    public TicketCreationResponse createTicket(TicketCreationRequest request, String username) {
-        System.out.println(request);
-
+    public Ticket createTicket(TicketCreationRequest request, String username) {
         Person person;
         Optional<Person> existingPerson = personRepository.findPersonByPassportID(String.valueOf(request.getPerson().getPassportID()));
 
@@ -90,7 +88,7 @@ public class TicketService {
 
         log.info("Ticket created with Id: {} by user: {}", ticketCreated.getId(), username);
 
-        return convertToResponse(ticketCreated);
+        return ticketCreated;
     }
 
     public Page<TicketCreationResponse> getAllTickets(Pageable pageable, String substring) {
@@ -105,7 +103,7 @@ public class TicketService {
         return convertToResponse(ticket);
     }
 
-    public TicketCreationResponse updateTicket(Integer id, TicketCreationRequest request, String username) {
+    public Ticket updateTicket(Integer id, TicketCreationRequest request, String username) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
 
@@ -134,7 +132,7 @@ public class TicketService {
         Ticket updatedTicket = ticketRepository.save(ticket);
         log.info("Ticket updated with Id: {} by user: {}", updatedTicket.getId(), username);
 
-        return convertToResponse(updatedTicket);
+        return updatedTicket;
     }
 
     public void deleteTicket(Integer id, String username) {

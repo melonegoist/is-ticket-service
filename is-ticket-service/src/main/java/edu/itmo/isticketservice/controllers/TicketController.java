@@ -16,12 +16,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,15 +34,17 @@ import java.util.Objects;
 public class TicketController {
 
     private final TicketService ticketService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     @PostMapping("/create-ticket")
     public ResponseEntity<TicketCreationResponse> createTicket(
             @Valid @RequestBody TicketCreationRequest request,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
-        TicketCreationResponse response = ticketService.createTicket(request, userDetails.getUsername());
+        Ticket ticket = ticketService.createTicket(request, userDetails.getUsername());
+        simpMessagingTemplate.convertAndSend("/topic/tickets", ticket);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(convertToResponse(ticket));
     }
 
     @GetMapping
@@ -79,9 +83,10 @@ public class TicketController {
             @Valid @RequestBody TicketCreationRequest request,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
-        TicketCreationResponse response = ticketService.updateTicket(id, request, userDetails.getUsername());
+        Ticket updatedTicket = ticketService.updateTicket(id, request, userDetails.getUsername());
+        simpMessagingTemplate.convertAndSend("/topic/tickets", updatedTicket);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(convertToResponse(updatedTicket));
     }
 
     @DeleteMapping("/{id}")
@@ -90,6 +95,7 @@ public class TicketController {
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         ticketService.deleteTicket(id, userDetails.getUsername());
+        simpMessagingTemplate.convertAndSend("/topic/tickets", id);
 
         return ResponseEntity.noContent().build();
     }
@@ -163,6 +169,26 @@ public class TicketController {
         TicketCreationResponse soldTicket = ticketService.sellTicket(ticketId, request, principal.getName());
 
         return ResponseEntity.ok(soldTicket);
+    }
+
+    private TicketCreationResponse convertToResponse(Ticket ticket) {
+        return new TicketCreationResponse(
+                ticket.getId(),
+                ticket.getName(),
+                ticket.getCoordinates(),
+                ticket.getCreationDate(),
+                ticket.getPerson().getPassportID(),
+                ticket.getVenue().getId(),
+                ticket.getPerson(),
+                ticket.getEvent(),
+                ticket.getPrice(),
+                ticket.getType(),
+                ticket.getDiscount(),
+                ticket.getNumber(),
+                ticket.getVenue(),
+                ticket.getUser().getUsername(),
+                LocalDate.now()
+        );
     }
 
 }
