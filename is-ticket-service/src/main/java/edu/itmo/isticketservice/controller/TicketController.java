@@ -1,11 +1,11 @@
-package edu.itmo.isticketservice.controllers;
+package edu.itmo.isticketservice.controller;
 
 import edu.itmo.isticketservice.dto.CloneTicketRequest;
 import edu.itmo.isticketservice.dto.SellTicketRequest;
 import edu.itmo.isticketservice.dto.TicketCreationRequest;
 import edu.itmo.isticketservice.dto.TicketCreationResponse;
 import edu.itmo.isticketservice.model.Ticket;
-import edu.itmo.isticketservice.services.TicketService;
+import edu.itmo.isticketservice.service.TicketService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -16,12 +16,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,16 +33,19 @@ import java.util.Objects;
 @Validated
 public class TicketController {
 
+    public static final String TOPIC_TICKETS = "/topic/tickets";
     private final TicketService ticketService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     @PostMapping("/create-ticket")
     public ResponseEntity<TicketCreationResponse> createTicket(
             @Valid @RequestBody TicketCreationRequest request,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
-        TicketCreationResponse response = ticketService.createTicket(request, userDetails.getUsername());
+        Ticket ticket = ticketService.createTicket(request, userDetails.getUsername());
+        simpMessagingTemplate.convertAndSend(TOPIC_TICKETS, ticket);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(convertToResponse(ticket));
     }
 
     @GetMapping
@@ -79,9 +84,10 @@ public class TicketController {
             @Valid @RequestBody TicketCreationRequest request,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
-        TicketCreationResponse response = ticketService.updateTicket(id, request, userDetails.getUsername());
+        Ticket updatedTicket = ticketService.updateTicket(id, request, userDetails.getUsername());
+        simpMessagingTemplate.convertAndSend(TOPIC_TICKETS, updatedTicket);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(convertToResponse(updatedTicket));
     }
 
     @DeleteMapping("/{id}")
@@ -90,6 +96,7 @@ public class TicketController {
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         ticketService.deleteTicket(id, userDetails.getUsername());
+        simpMessagingTemplate.convertAndSend(TOPIC_TICKETS, id);
 
         return ResponseEntity.noContent().build();
     }
@@ -163,6 +170,26 @@ public class TicketController {
         TicketCreationResponse soldTicket = ticketService.sellTicket(ticketId, request, principal.getName());
 
         return ResponseEntity.ok(soldTicket);
+    }
+
+    private TicketCreationResponse convertToResponse(Ticket ticket) {
+        return new TicketCreationResponse(
+                ticket.getId(),
+                ticket.getName(),
+                ticket.getCoordinates(),
+                ticket.getCreationDate(),
+                ticket.getPerson().getPassportID(),
+                ticket.getVenue().getId(),
+                ticket.getPerson(),
+                ticket.getEvent(),
+                ticket.getPrice(),
+                ticket.getType(),
+                ticket.getDiscount(),
+                ticket.getNumber(),
+                ticket.getVenue(),
+                ticket.getUser().getUsername(),
+                LocalDate.now()
+        );
     }
 
 }

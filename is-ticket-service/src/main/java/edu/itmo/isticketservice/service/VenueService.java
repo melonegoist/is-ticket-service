@@ -1,4 +1,4 @@
-package edu.itmo.isticketservice.services;
+package edu.itmo.isticketservice.service;
 
 import edu.itmo.isticketservice.dto.VenueCreationRequest;
 import edu.itmo.isticketservice.dto.VenueCreationResponse;
@@ -6,6 +6,7 @@ import edu.itmo.isticketservice.model.Venue;
 import edu.itmo.isticketservice.repository.VenueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
 public class VenueService {
 
     private final VenueRepository venueRepository;
+    private final TicketService ticketService;
 
     public VenueCreationResponse createVenue(VenueCreationRequest request) {
         Venue venue = Venue.builder()
@@ -24,19 +26,25 @@ public class VenueService {
 
         venueRepository.save(venue);
 
-        return toDto(venue);
+        return toDto();
     }
 
     public List<Venue> getAllVenues() {
-        List<Venue> venues = venueRepository.findAll();
-
-        return venues;
+        return venueRepository.findAll();
     }
 
-    private VenueCreationResponse toDto(Venue venue) {
+    private VenueCreationResponse toDto() {
         return new VenueCreationResponse(
                 "Venue created successfully"
         );
+    }
+
+    @Transactional
+    public void deleteVenue(Long id) {
+        if (venueRepository.existsById(id)) {
+            ticketService.deleteTicketsByVenueId(id);
+            venueRepository.deleteById(id);
+        }
     }
 
 }

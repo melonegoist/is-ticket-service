@@ -1,9 +1,10 @@
-package edu.itmo.isticketservice.services;
+package edu.itmo.isticketservice.service;
 
-import edu.itmo.isticketservice.exceptions.UserAlreadyExistsException;
+import edu.itmo.isticketservice.exception.UserAlreadyExistsException;
 import edu.itmo.isticketservice.model.User;
 import edu.itmo.isticketservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -46,9 +47,8 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+    @Bean
     public UserDetailsService userDetailsService() {
-//        return this::getUserByUsername;
-
         return new CustomUserDetailsService(userRepository);
     }
 

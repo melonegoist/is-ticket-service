@@ -1,9 +1,9 @@
-package edu.itmo.isticketservice.controllers;
+package edu.itmo.isticketservice.controller;
 
 import edu.itmo.isticketservice.dto.PersonCreationRequest;
 import edu.itmo.isticketservice.dto.PersonCreationResponse;
 import edu.itmo.isticketservice.model.Person;
-import edu.itmo.isticketservice.services.PersonService;
+import edu.itmo.isticketservice.service.PersonService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,6 @@ public class PersonController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPerson);
     }
 
-    //todo
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePerson(@PathVariable String id) {
         if (personService.deletePerson(id)) {

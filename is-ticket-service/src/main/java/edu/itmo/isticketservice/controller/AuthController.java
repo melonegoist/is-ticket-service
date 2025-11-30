@@ -1,9 +1,9 @@
-package edu.itmo.isticketservice.controllers;
+package edu.itmo.isticketservice.controller;
 
 import edu.itmo.isticketservice.dto.JwtResponse;
 import edu.itmo.isticketservice.dto.SignInRequest;
 import edu.itmo.isticketservice.dto.SignUpRequest;
-import edu.itmo.isticketservice.services.AuthService;
+import edu.itmo.isticketservice.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<?> signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
+    public ResponseEntity<JwtResponse> signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
         return ResponseEntity.ok(authService.signUp(signUpRequest));
     }
 

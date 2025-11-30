@@ -1,12 +1,14 @@
-package edu.itmo.isticketservice.controllers;
+package edu.itmo.isticketservice.controller;
 
 import edu.itmo.isticketservice.dto.VenueCreationRequest;
 import edu.itmo.isticketservice.dto.VenueCreationResponse;
 import edu.itmo.isticketservice.model.Venue;
-import edu.itmo.isticketservice.services.VenueService;
+import edu.itmo.isticketservice.service.VenueService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +32,20 @@ public class VenueController {
         VenueCreationResponse createdVenue = venueService.createVenue(request);
 
         return ResponseEntity.ok(createdVenue);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteVenue(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        if (userDetails.getAuthorities().stream().anyMatch(a -> !a.getAuthority().equals("ROLE_ADMIN"))) { //delete
+            venueService.deleteVenue(id);
+
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.badRequest().build();
     }
 
 }

@@ -1,4 +1,4 @@
-package edu.itmo.isticketservice.exceptions;
+package edu.itmo.isticketservice.exception;
 
 import edu.itmo.isticketservice.dto.ErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -223,7 +223,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    /* todo
+    /*
 
     user not found
     incorrect password
