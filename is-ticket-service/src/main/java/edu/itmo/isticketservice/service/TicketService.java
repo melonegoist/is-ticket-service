@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -29,24 +28,19 @@ public class TicketService {
     private final UserRepository userRepository;
     private final VenueRepository venueRepository;
     private final PersonRepository personRepository;
+    private final EventRepository eventRepository;
 
     public Ticket createTicket(TicketCreationRequest request, String username) {
-        Person person;
-        Optional<Person> existingPerson = personRepository.findPersonByPassportID(String.valueOf(request.getPerson().getPassportID()));
+        Person person = personRepository.findPersonByPassportID(request.getPersonId())
+                .orElseThrow(() -> new EntityNotFoundException("Owner not found " + request.getPersonId()));
 
-        if (existingPerson.isEmpty()) {
-            throw new EntityNotFoundException("Owner not found " + request.getPersonId());
-        } else {
-            person = existingPerson.get();
-        }
+        Venue venue = venueRepository.findById(request.getVenueId())
+                .orElseThrow(() -> new EntityNotFoundException("Venue not found " + request.getVenueId()));
 
-        Venue venue;
-        Optional<Venue> existingVenue = venueRepository.findById(request.getVenue().getId());
-
-        if (existingVenue.isEmpty()) {
-            throw new EntityNotFoundException("Venue not found " + request.getVenueId());
-        } else {
-            venue = existingVenue.get();
+        Event event = null;
+        if (request.getEventId() != null) {
+            event = eventRepository.findById(request.getEventId())
+                    .orElseThrow(() -> new EntityNotFoundException("Event not found " + request.getEventId()));
         }
 
         User user = userRepository.findByUsername(username)
@@ -57,6 +51,7 @@ public class TicketService {
                 .coordinates(request.getCoordinates())
                 .person(person)
                 .venue(venue)
+                .event(event)
                 .price(request.getPrice())
                 .type(request.getTicketType())
                 .discount(request.getDiscount())
@@ -94,11 +89,17 @@ public class TicketService {
             throw new AccessDeniedException("Access denied");
         }
 
-        Person person = personRepository.findPersonByPassportID(String.valueOf(request.getPersonId()))
+        Person person = personRepository.findPersonByPassportID(request.getPersonId())
                 .orElseThrow(() -> new EntityNotFoundException("Owner not found" + request.getPersonId()));
 
         Venue venue = venueRepository.findById(request.getVenueId())
                 .orElseThrow(() -> new EntityNotFoundException("Venue not found" + request.getVenueId()));
+
+        Event event = null;
+        if (request.getEventId() != null) {
+            event = eventRepository.findById(request.getEventId())
+                    .orElseThrow(() -> new EntityNotFoundException("Event not found" + request.getEventId()));
+        }
 
         ticket.setName(request.getName());
         ticket.setCoordinates(request.getCoordinates());
@@ -108,6 +109,7 @@ public class TicketService {
         ticket.setDiscount(request.getDiscount());
         ticket.setType(request.getTicketType());
         ticket.setNumber(request.getNumber());
+        ticket.setEvent(event);
 
         Ticket updatedTicket = ticketRepository.save(ticket);
         log.info("Ticket updated with Id: {} by user: {}", updatedTicket.getId(), username);

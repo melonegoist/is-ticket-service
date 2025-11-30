@@ -1,5 +1,6 @@
 package edu.itmo.isticketservice.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
@@ -11,7 +12,7 @@ public class SellTicketRequest {
     @Positive(message = "Sale price must be positive")
     private Integer salePrice;
 
-    @NotNull
-    private Long personId;
+    @NotBlank
+    private String personId;
 
 }
