@@ -28,11 +28,8 @@ public class Ticket {
 
     @NotNull
     @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "x", column = @Column(name = "coord_x")),
-            @AttributeOverride(name = "y", column = @Column(name = "coord_y", nullable = false))
-
-    })
+    @AttributeOverride(name = "x", column = @Column(name = "coord_x"))
+    @AttributeOverride(name = "y", column = @Column(name = "coord_y", nullable = false))
     private Coordinates coordinates;
 
     @NotNull

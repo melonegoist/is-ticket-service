@@ -26,16 +26,14 @@ public class VenueService {
 
         venueRepository.save(venue);
 
-        return toDto(venue);
+        return toDto();
     }
 
     public List<Venue> getAllVenues() {
-        List<Venue> venues = venueRepository.findAll();
-
-        return venues;
+        return venueRepository.findAll();
     }
 
-    private VenueCreationResponse toDto(Venue venue) {
+    private VenueCreationResponse toDto() {
         return new VenueCreationResponse(
                 "Venue created successfully"
         );

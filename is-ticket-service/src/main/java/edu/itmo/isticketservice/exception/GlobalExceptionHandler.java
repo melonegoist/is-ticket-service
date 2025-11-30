@@ -223,7 +223,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    /* todo
+    /*
 
     user not found
     incorrect password

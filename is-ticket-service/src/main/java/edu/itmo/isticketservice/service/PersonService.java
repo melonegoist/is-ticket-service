@@ -37,17 +37,13 @@ public class PersonService {
     }
 
     public List<Person> getAllPersons() {
-        List<Person> persons = personRepository.findAll();
-
-        return persons;
+        return personRepository.findAll();
     }
 
     @Transactional
     public boolean deletePerson(String passportID) {
         if (personRepository.existsPersonByPassportID(passportID)) {
-            ticketRepository.findTicketByPersonPassportID(passportID).forEach(ticket -> {
-                ticketRepository.deleteById(ticket.getId());
-            });
+            ticketRepository.findTicketByPersonPassportID(passportID).forEach(ticket -> ticketRepository.deleteById(ticket.getId()));
 
             personRepository.deleteByPassportID(passportID);
 
@@ -62,7 +58,6 @@ public class PersonService {
                 String.format("Person with passport ID %s created successfully", person.getPassportID())
         );
     }
-
 
 
 }

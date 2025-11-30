@@ -24,12 +24,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TicketService {
 
+    private static final String TICKET_NOT_FOUND = "Ticket not found";
     private final TicketRepository ticketRepository;
     private final UserRepository userRepository;
     private final VenueRepository venueRepository;
     private final PersonRepository personRepository;
 
-    // todo: add some exceptions
     public Ticket createTicket(TicketCreationRequest request, String username) {
         Person person;
         Optional<Person> existingPerson = personRepository.findPersonByPassportID(String.valueOf(request.getPerson().getPassportID()));
@@ -48,26 +48,6 @@ public class TicketService {
         } else {
             venue = existingVenue.get();
         }
-
-//        Event event;
-//        Optional<Event> existingEvent = eventRepository.findEventById(request.getEvent().getId());
-//
-//        if (existingEvent.isEmpty()) {
-//            throw new EntityNotFoundException("Event not found " + request.getEventId());
-//        } else {
-//            event = existingEvent.get();
-//        }
-
-
-
-//        Person owner = personRepository.findPersonByPassportID(String.valueOf(request.getPersonId()))
-//                .orElseThrow(() -> new EntityNotFoundException("Owner not found " + request.getPersonId()));
-
-//        Venue venue = venueRepository.findById(request.getVenueId())
-//                .orElseThrow(() -> new EntityNotFoundException("Venue not found " + request.getVenueId()));
-//
-//        Event event = eventRepository.findById(request.getEventId())
-//                .orElse(null);
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User not found " + username));
@@ -98,14 +78,14 @@ public class TicketService {
 
     public TicketCreationResponse getTicketById(Integer id) {
         Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
+                .orElseThrow(() -> new EntityNotFoundException(TICKET_NOT_FOUND));
 
         return convertToResponse(ticket);
     }
 
     public Ticket updateTicket(Integer id, TicketCreationRequest request, String username) {
         Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
+                .orElseThrow(() -> new EntityNotFoundException(TICKET_NOT_FOUND));
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User not found" + username));
@@ -137,7 +117,7 @@ public class TicketService {
 
     public void deleteTicket(Integer id, String username) {
         Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
+                .orElseThrow(() -> new EntityNotFoundException(TICKET_NOT_FOUND));
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User not found" + username));

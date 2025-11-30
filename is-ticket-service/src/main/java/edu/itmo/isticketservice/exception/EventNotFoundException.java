@@ -1,8 +1,6 @@
 package edu.itmo.isticketservice.exception;
 
-import jakarta.persistence.EntityNotFoundException;
-
-public class EventNotFoundException extends EntityNotFoundException {
+public class EventNotFoundException extends RuntimeException {
 
     public EventNotFoundException(Long id) {
         super("Event with id " + id + " not found");

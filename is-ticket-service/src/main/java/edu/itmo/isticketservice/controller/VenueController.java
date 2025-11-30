@@ -39,7 +39,7 @@ public class VenueController {
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
-        if (userDetails.getAuthorities().stream().anyMatch(a -> !a.getAuthority().equals("ROLE_ADMIN"))) { //todo
+        if (userDetails.getAuthorities().stream().anyMatch(a -> !a.getAuthority().equals("ROLE_ADMIN"))) { //delete
             venueService.deleteVenue(id);
 
             return ResponseEntity.noContent().build();

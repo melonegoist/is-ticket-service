@@ -20,7 +20,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<?> signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
+    public ResponseEntity<JwtResponse> signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
         return ResponseEntity.ok(authService.signUp(signUpRequest));
     }
 

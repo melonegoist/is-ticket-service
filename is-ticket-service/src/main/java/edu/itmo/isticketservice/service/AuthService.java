@@ -22,7 +22,6 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public JwtResponse signUp(SignUpRequest signUpRequest) {
-        System.out.println(signUpRequest);
         var user = User.builder()
                 .username(signUpRequest.getUsername())
                 .email(signUpRequest.getEmail())

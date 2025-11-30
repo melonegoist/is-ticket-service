@@ -33,6 +33,7 @@ import java.util.Objects;
 @Validated
 public class TicketController {
 
+    public static final String TOPIC_TICKETS = "/topic/tickets";
     private final TicketService ticketService;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
@@ -42,7 +43,7 @@ public class TicketController {
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         Ticket ticket = ticketService.createTicket(request, userDetails.getUsername());
-        simpMessagingTemplate.convertAndSend("/topic/tickets", ticket);
+        simpMessagingTemplate.convertAndSend(TOPIC_TICKETS, ticket);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToResponse(ticket));
     }
@@ -84,7 +85,7 @@ public class TicketController {
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         Ticket updatedTicket = ticketService.updateTicket(id, request, userDetails.getUsername());
-        simpMessagingTemplate.convertAndSend("/topic/tickets", updatedTicket);
+        simpMessagingTemplate.convertAndSend(TOPIC_TICKETS, updatedTicket);
 
         return ResponseEntity.ok(convertToResponse(updatedTicket));
     }
@@ -95,7 +96,7 @@ public class TicketController {
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         ticketService.deleteTicket(id, userDetails.getUsername());
-        simpMessagingTemplate.convertAndSend("/topic/tickets", id);
+        simpMessagingTemplate.convertAndSend(TOPIC_TICKETS, id);
 
         return ResponseEntity.noContent().build();
     }

@@ -33,7 +33,6 @@ public class PersonController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPerson);
     }
 
-    //todo
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePerson(@PathVariable String id) {
         if (personService.deletePerson(id)) {
