@@ -20,6 +20,7 @@ public class AuthService {
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final CustomUserDetailsService userDetailsService;
 
     public JwtResponse signUp(SignUpRequest signUpRequest) {
         var user = User.builder()
@@ -42,10 +43,7 @@ public class AuthService {
                 signInRequest.getPassword()
         ));
 
-        var user = userService
-                .userDetailsService()
-                .loadUserByUsername(signInRequest.getLogin());
-
+        var user = userDetailsService.loadUserByUsername(signInRequest.getLogin());
         var jwtToken = jwtUtils.generateToken(user);
 
         return new JwtResponse(jwtToken, 220, "jwt token generated successfully");

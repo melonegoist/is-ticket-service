@@ -31,23 +31,11 @@ public class TicketService {
     private final PersonRepository personRepository;
 
     public Ticket createTicket(TicketCreationRequest request, String username) {
-        Person person;
-        Optional<Person> existingPerson = personRepository.findPersonByPassportID(String.valueOf(request.getPerson().getPassportID()));
+        Person person = personRepository.findPersonByPassportID(String.valueOf(request.getPersonId()))
+                .orElseThrow(() -> new EntityNotFoundException("Owner not found " + request.getPersonId()));
 
-        if (existingPerson.isEmpty()) {
-            throw new EntityNotFoundException("Owner not found " + request.getPersonId());
-        } else {
-            person = existingPerson.get();
-        }
-
-        Venue venue;
-        Optional<Venue> existingVenue = venueRepository.findById(request.getVenue().getId());
-
-        if (existingVenue.isEmpty()) {
-            throw new EntityNotFoundException("Venue not found " + request.getVenueId());
-        } else {
-            venue = existingVenue.get();
-        }
+        Venue venue = venueRepository.findById(request.getVenueId())
+                .orElseThrow(() -> new EntityNotFoundException("Venue not found " + request.getVenueId()));
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User not found " + username));
