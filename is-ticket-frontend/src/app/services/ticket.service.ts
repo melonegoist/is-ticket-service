@@ -7,7 +7,7 @@ import {Ticket, TicketType, Color, Country, VenueType, Person, Venue} from '../m
   providedIn: 'root'
 })
 export class TicketService {
-  private apiUrl = 'http://localhost:7861/api/tickets';
+  private apiUrl = 'http://localhost:8080/api/tickets';
   private tickets = signal<Ticket[]>([]);
 
   constructor(public http: HttpClient) {}
@@ -141,22 +141,30 @@ export class TicketService {
 
   // Add to TicketService class
   getAllPersons(): Observable<Person[]> {
-    return this.http.get<Person[]>('http://localhost:7861/api/persons')
+    return this.http.get<Person[]>('http://localhost:8080/api/persons')
       .pipe(catchError(this.handleError));
   }
 
   createPerson(person: Person): Observable<Person> {
-    return this.http.post<Person>('http://localhost:7861/api/persons', person)
+    return this.http.post<Person>('http://localhost:8080/api/persons', person)
       .pipe(catchError(this.handleError));
   }
 
   getAllVenues(): Observable<Venue[]> {
-    return this.http.get<Venue[]>('http://localhost:7861/api/venues')
+    return this.http.get<Venue[]>('http://localhost:8080/api/venues')
       .pipe(catchError(this.handleError));
   }
 
   createVenue(venue: Venue): Observable<Venue> {
-    return this.http.post<Venue>('http://localhost:7861/api/venues', venue)
+    return this.http.post<Venue>('http://localhost:8080/api/venues', venue)
+      .pipe(catchError(this.handleError));
+  }
+
+  importTicketsFromXml(file: File): Observable<Ticket[]> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post<Ticket[]>(`${this.apiUrl}/import`, formData)
       .pipe(catchError(this.handleError));
   }
 }

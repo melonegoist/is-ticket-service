@@ -6,6 +6,8 @@ import { Subscription } from 'rxjs';
 import { Ticket } from '../../models/ticket.model';
 import { TicketService } from '../../services/ticket.service';
 import { AuthService } from '../../services/auth.service';
+import { ImportOperation } from '../../models/import-operation.model';
+import { ImportOperationService } from '../../services/import-operation.service';
 
 @Component({
   selector: 'app-ticket-list',
@@ -24,17 +26,25 @@ export class TicketListComponent implements OnInit, OnDestroy {
   searchTerm = signal('');
   sortField = signal('id');
   sortDirection = signal('asc');
+  importing = signal(false);
+  importError = signal('');
+  importResult = signal<Ticket[] | null>(null);
+  selectedFile = signal<File | null>(null);
+  importOperations = signal<ImportOperation[]>([]);
+  importHistoryLoading = signal(false);
 
   private subscription?: Subscription;
 
   constructor(
     private ticketService: TicketService,
     private authService: AuthService,
+    private importOperationService: ImportOperationService,
     protected router: Router
   ) {}
 
   ngOnInit(): void {
     this.loadTickets();
+    this.loadImportOperations();
     // Subscribe to real-time updates would go here
   }
 
@@ -156,4 +166,50 @@ export class TicketListComponent implements OnInit, OnDestroy {
 
     return pages;
   }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.item(0) ?? null;
+    this.selectedFile.set(file);
+    this.importError.set('');
+    this.importResult.set(null);
+  }
+
+  importTickets(): void {
+    if (!this.selectedFile()) {
+      this.importError.set('Please select an XML file to import.');
+      return;
+    }
+
+    this.importing.set(true);
+    this.importError.set('');
+
+    this.ticketService.importTicketsFromXml(this.selectedFile()!).subscribe({
+      next: (tickets) => {
+        this.importResult.set(tickets);
+        this.importing.set(false);
+        this.loadTickets();
+        this.loadImportOperations();
+      },
+      error: (error) => {
+        this.importError.set(error.message || 'Failed to import tickets.');
+        this.importing.set(false);
+        this.loadImportOperations();
+      }
+    });
+  }
+
+  loadImportOperations(): void {
+    this.importHistoryLoading.set(true);
+    this.importOperationService.getOperations().subscribe({
+      next: (operations) => {
+        this.importOperations.set(operations);
+        this.importHistoryLoading.set(false);
+      },
+      error: () => {
+        this.importHistoryLoading.set(false);
+      }
+    });
+  }
+
 }
