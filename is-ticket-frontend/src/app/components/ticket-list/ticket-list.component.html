@@ -69,6 +69,66 @@
     }
   </div>
 
+  <div class="import-history">
+    <div class="import-history__header">
+      <div>
+        <h3>Import history</h3>
+        <p class="import-subtitle">You can see your import operations here. Administrators can see all imports.</p>
+      </div>
+      @if (importHistoryLoading()) {
+        <div class="loading-inline">
+          <span class="spinner small"></span>
+          <span>Loading history…</span>
+        </div>
+      } @else {
+      <button class="btn-secondary" (click)="loadImportOperations()">Refresh</button>
+      }
+    </div>
+
+    @if (importOperations().length === 0 && !importHistoryLoading()) {
+      <div class="empty-state compact">
+        <span class="empty-icon">📂</span>
+        <p>No import operations yet.</p>
+      </div>
+    } @else {
+      <div class="table-wrapper compact">
+        <table class="glass-table">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Status</th>
+            <th>User</th>
+            <th>Created objects</th>
+            <th>Started</th>
+            <th>Completed</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (operation of importOperations(); track operation.id) {
+              <tr>
+                <td class="ticket-id">{{ operation.id }}</td>
+                <td>
+                  <span class="status-badge" [class]="operation.status.toLowerCase()">{{ operation.status }}</span>
+                </td>
+                <td>{{ operation.username }}</td>
+                <td>
+                  @if (operation.status === 'SUCCESS') {
+                    {{ operation.createdCount ?? 0 }}
+                  } @else {
+                    —
+                  }
+                </td>
+                <td>{{ operation.startedAt || '—' }}</td>
+                <td>{{ operation.completedAt || (operation.status === 'IN_PROGRESS' ? 'In progress' : '—') }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+
   <div class="table-container">
     @if (isLoading()) {
       <div class="loading-state">
