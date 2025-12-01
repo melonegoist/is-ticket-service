@@ -23,7 +23,10 @@ export class TicketListComponent implements OnInit, OnDestroy {
   isLoading = signal(false);
   searchTerm = signal('');
   sortField = signal('id');
-  sortDirection = signal('asc');
+  sortDirection = signal('asc');importing = signal(false);
+  importError = signal('');
+  importResult = signal<Ticket[] | null>(null);
+  selectedFile = signal<File | null>(null);
 
   private subscription?: Subscription;
 
@@ -156,4 +159,35 @@ export class TicketListComponent implements OnInit, OnDestroy {
 
     return pages;
   }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.item(0) ?? null;
+    this.selectedFile.set(file);
+    this.importError.set('');
+    this.importResult.set(null);
+  }
+
+  importTickets(): void {
+    if (!this.selectedFile()) {
+      this.importError.set('Please select an XML file to import.');
+      return;
+    }
+
+    this.importing.set(true);
+    this.importError.set('');
+
+    this.ticketService.importTicketsFromXml(this.selectedFile()!).subscribe({
+      next: (tickets) => {
+        this.importResult.set(tickets);
+        this.importing.set(false);
+        this.loadTickets();
+      },
+      error: (error) => {
+        this.importError.set(error.message || 'Failed to import tickets.');
+        this.importing.set(false);
+      }
+    });
+  }
+
 }

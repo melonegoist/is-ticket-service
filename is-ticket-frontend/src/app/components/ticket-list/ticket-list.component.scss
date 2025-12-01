@@ -74,6 +74,71 @@
   }
 }
 
+.import-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  color: white;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+
+  .import-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+
+    h3 {
+      margin: 0 0 4px 0;
+      font-weight: 600;
+    }
+
+    .import-subtitle {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.75);
+      font-size: 14px;
+    }
+
+    .import-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      input[type="file"] {
+        color: white;
+      }
+    }
+  }
+}
+
+.alert {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-weight: 500;
+
+  &.alert-success {
+    background: rgba(46, 204, 113, 0.15);
+    border: 1px solid rgba(46, 204, 113, 0.4);
+    color: #a9f5c7;
+  }
+
+  &.alert-error {
+    background: rgba(231, 76, 60, 0.15);
+    border: 1px solid rgba(231, 76, 60, 0.4);
+    color: #ffb3aa;
+  }
+}
+
+.spinner.small {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top: 2px solid white;
+}
+
 .table-container {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);

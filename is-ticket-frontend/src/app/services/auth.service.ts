@@ -18,7 +18,7 @@ export interface AuthResponse { // todo: check
 })
 export class AuthService {
   private currentUser = signal<User | null>(null);
-  private apiUrl = 'http://localhost:7861/auth';
+  private apiUrl = 'http://localhost:8080/auth';
   private tokenExpirationTimer: any;
 
   constructor(private http: HttpClient) {}
