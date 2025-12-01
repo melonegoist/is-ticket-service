@@ -7,6 +7,7 @@ import edu.itmo.isticketservice.service.PersonService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class PersonController {
         return ResponseEntity.ok(persons);
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PersonCreationResponse> createPerson(@Valid @RequestBody PersonCreationRequest request) {
         PersonCreationResponse createdPerson = personService.createPerson(request);
 

@@ -49,6 +49,7 @@ public class TicketController {
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         if (file.isEmpty()) {
+            System.out.println("here");
             return ResponseEntity.badRequest().build();
         }
 
@@ -60,11 +61,12 @@ public class TicketController {
 
             return ResponseEntity.status(HttpStatus.CREATED).body(importedTickets);
         } catch (IOException e) {
+            System.out.println("here" + e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @PostMapping("/create-ticket")
+    @PostMapping(value = "/create-ticket", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TicketCreationResponse> createTicket(
             @Valid @RequestBody TicketCreationRequest request,
             @AuthenticationPrincipal UserDetails userDetails
@@ -105,7 +107,7 @@ public class TicketController {
         return ResponseEntity.ok(ticket);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TicketCreationResponse> updateTicket(
             @PathVariable Integer id,
             @Valid @RequestBody TicketCreationRequest request,
@@ -170,7 +172,7 @@ public class TicketController {
 
     // 5. Создать новый билет на основе указанного, указав скидку в заданное число %,
     // и, одновременно, увеличив цену билета на ту же самую сумму
-    @PostMapping("/{ticketId}/clone-with-discount")
+    @PostMapping(value = "/{ticketId}/clone-with-discount", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TicketCreationResponse> cloneTicketWithDiscount(
             @PathVariable Integer ticketId,
             @RequestBody @Valid CloneTicketRequest request,
@@ -182,13 +184,13 @@ public class TicketController {
     }
 
     // 6. Посчитать сумму количества всех билетов
-    @GetMapping("/search/get-tickets-number-sum")
+    @GetMapping(value = "/search/get-tickets-number-sum", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Integer> getTicketsNumberSum() {
         return ResponseEntity.ok(ticketService.getSumOfTicketsNumber());
     }
 
     // 7. Продать билет
-    @PostMapping("/{ticketId}/sell")
+    @PostMapping(value = "/{ticketId}/sell", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TicketCreationResponse> sellTicket(
             @PathVariable Integer ticketId,
             @RequestBody @Valid SellTicketRequest request,

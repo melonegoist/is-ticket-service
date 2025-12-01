@@ -6,6 +6,7 @@ import edu.itmo.isticketservice.model.Venue;
 import edu.itmo.isticketservice.service.VenueService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +28,7 @@ public class VenueController {
         return ResponseEntity.ok(venues);
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<VenueCreationResponse> createVenue(@Valid @RequestBody VenueCreationRequest request) {
         VenueCreationResponse createdVenue = venueService.createVenue(request);
 
