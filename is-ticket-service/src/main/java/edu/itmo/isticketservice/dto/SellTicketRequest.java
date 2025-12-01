@@ -12,6 +12,6 @@ public class SellTicketRequest {
     private Integer salePrice;
 
     @NotNull
-    private Long personId;
+    private String personId;
 
 }

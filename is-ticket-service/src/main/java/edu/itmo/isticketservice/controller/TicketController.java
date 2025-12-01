@@ -1,10 +1,12 @@
 package edu.itmo.isticketservice.controller;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import edu.itmo.isticketservice.dto.CloneTicketRequest;
 import edu.itmo.isticketservice.dto.SellTicketRequest;
 import edu.itmo.isticketservice.dto.TicketCreationRequest;
 import edu.itmo.isticketservice.dto.TicketCreationResponse;
 import edu.itmo.isticketservice.model.Ticket;
+import edu.itmo.isticketservice.model.TicketImportRequest;
 import edu.itmo.isticketservice.service.TicketService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -15,13 +17,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
@@ -36,6 +41,28 @@ public class TicketController {
     public static final String TOPIC_TICKETS = "/topic/tickets";
     private final TicketService ticketService;
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final XmlMapper xmlMapper;
+
+    @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<List<TicketCreationResponse>> importTickets(
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        try {
+            TicketImportRequest importRequest = xmlMapper.readValue(file.getInputStream(), TicketImportRequest.class);
+            List<TicketCreationResponse> importedTickets = ticketService.importTickets(importRequest.getTickets(), userDetails.getUsername());
+
+            importedTickets.forEach(ticketResponse -> simpMessagingTemplate.convertAndSend(TOPIC_TICKETS, ticketResponse));
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(importedTickets);
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
     @PostMapping("/create-ticket")
     public ResponseEntity<TicketCreationResponse> createTicket(

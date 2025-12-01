@@ -17,8 +17,8 @@ public class TicketCreationRequest {
 
     private final LocalDateTime created = LocalDateTime.now();
 
-    @NotNull(message = "owner is required!")
-    private Long personId;
+    @NotBlank(message = "owner is required!")
+    private String personId;
 
     private Person person;
     private Venue venue;
