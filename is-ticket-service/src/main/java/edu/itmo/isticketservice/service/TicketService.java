@@ -6,6 +6,7 @@ import edu.itmo.isticketservice.model.import_dto.PersonImportDTO;
 import edu.itmo.isticketservice.model.import_dto.TicketImportDTO;
 import edu.itmo.isticketservice.model.import_dto.VenueImportDTO;
 import edu.itmo.isticketservice.repository.*;
+import edu.itmo.isticketservice.security.ImportOperationService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -35,6 +36,7 @@ public class TicketService {
     private final VenueRepository venueRepository;
     private final PersonRepository personRepository;
     private final Validator validator;
+    private final ImportOperationService importOperationService;
 
     public Ticket createTicket(TicketCreationRequest request, String username) {
         Person person = personRepository.findPersonByPassportID(String.valueOf(request.getPersonId()))
@@ -256,20 +258,29 @@ public class TicketService {
     }
 
     @Transactional
-    public List<TicketCreationResponse> importTickets(List<TicketImportDTO> ticketImportRequests, String username) {
-        validateImportPayload(ticketImportRequests);
-
+    public List<TicketCreationResponse> importTickets(List<TicketImportDTO> tickets, String username) {
         User currentUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND + username));
 
-        List<Ticket> createdTickets = ticketImportRequests.stream()
-                .map(request -> buildTicketFromImport(request, currentUser))
-                .map(ticketRepository::save)
-                .toList();
+        var operation = importOperationService.startOperation(currentUser);
 
-        return createdTickets.stream()
-                .map(this::convertToResponse)
-                .toList();
+        try {
+            validateImportPayload(tickets);
+
+            List<Ticket> createdTickets = tickets.stream()
+                    .map(ticketDto -> buildTicketFromImport(ticketDto, currentUser))
+                    .map(ticketRepository::save)
+                    .toList();
+
+            importOperationService.markSuccess(operation.getId(), createdTickets.size());
+
+            return createdTickets.stream()
+                    .map(this::convertToResponse)
+                    .toList();
+        } catch (RuntimeException ex) {
+            importOperationService.markFailure(operation.getId(), ex.getMessage());
+            throw ex;
+        }
     }
 
     private void validateImportPayload(List<TicketImportDTO> tickets) {
