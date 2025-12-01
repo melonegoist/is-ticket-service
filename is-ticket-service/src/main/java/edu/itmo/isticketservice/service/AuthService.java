@@ -27,7 +27,7 @@ public class AuthService {
                 .username(signUpRequest.getUsername())
                 .email(signUpRequest.getEmail())
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
-                .role(signUpRequest.isAdmin() ? Role.ROLE_ADMIN : Role.ROLE_NON_AUTHORISED_USER)
+                .role(signUpRequest.getIsAdmin().equals("true") ? Role.ROLE_ADMIN : Role.ROLE_NON_AUTHORISED_USER)
                 .build();
 
         userService.createUser(user);

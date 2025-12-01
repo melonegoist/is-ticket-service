@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -38,6 +39,8 @@ public class TicketService {
     private final Validator validator;
     private final ImportOperationService importOperationService;
 
+//    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional
     public Ticket createTicket(TicketCreationRequest request, String username) {
         Person person = personRepository.findPersonByPassportID(String.valueOf(request.getPersonId()))
                 .orElseThrow(() -> new EntityNotFoundException("Owner not found " + request.getPersonId()));
@@ -79,6 +82,8 @@ public class TicketService {
         return convertToResponse(ticket);
     }
 
+//    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional
     public Ticket updateTicket(Integer id, TicketCreationRequest request, String username) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(TICKET_NOT_FOUND));
@@ -111,6 +116,8 @@ public class TicketService {
         return updatedTicket;
     }
 
+//    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional
     public void deleteTicket(Integer id, String username) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(TICKET_NOT_FOUND));
@@ -257,6 +264,7 @@ public class TicketService {
         }
     }
 
+//    @Transactional(isolation = Isolation.SERIALIZABLE)
     @Transactional
     public List<TicketCreationResponse> importTickets(List<TicketImportDTO> tickets, String username) {
         User currentUser = userRepository.findByUsername(username)

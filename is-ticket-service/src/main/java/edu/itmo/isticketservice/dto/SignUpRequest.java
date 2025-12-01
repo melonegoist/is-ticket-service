@@ -22,6 +22,6 @@ public class SignUpRequest {
     private String password;
 
     @NotNull
-    private boolean isAdmin;
+    private String isAdmin;
 
 }

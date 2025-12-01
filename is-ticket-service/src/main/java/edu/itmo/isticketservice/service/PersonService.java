@@ -7,6 +7,7 @@ import edu.itmo.isticketservice.repository.PersonRepository;
 import edu.itmo.isticketservice.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -18,6 +19,8 @@ public class PersonService {
     private final PersonRepository personRepository;
     private final TicketRepository ticketRepository;
 
+//    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional
     public PersonCreationResponse createPerson(PersonCreationRequest request) {
         if (personRepository.existsPersonByPassportID(request.getPassportID())) {
             throw new IllegalArgumentException("Person with this passport ID already exists");
