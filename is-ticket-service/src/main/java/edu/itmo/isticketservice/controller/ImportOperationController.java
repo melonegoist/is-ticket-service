@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/import")
+@RequestMapping("/api/import-operations")
 @RequiredArgsConstructor
 public class ImportOperationController {
 
