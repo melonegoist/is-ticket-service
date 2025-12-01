@@ -41,7 +41,7 @@ public class Ticket {
     @JoinColumn(name = "person_id")
     private Person person;
 
-    @ManyToOne
+    @ManyToOne // todo: lazy fetch type
     @JoinColumn(name = "event_id")
     private Event event;
 
