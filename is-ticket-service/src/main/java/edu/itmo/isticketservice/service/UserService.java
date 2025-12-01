@@ -4,9 +4,7 @@ import edu.itmo.isticketservice.exception.UserAlreadyExistsException;
 import edu.itmo.isticketservice.model.User;
 import edu.itmo.isticketservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -45,11 +43,6 @@ public class UserService {
     public User getUserByLogin(String login) {
         return userRepository.findByUsernameOrEmail(login)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new CustomUserDetailsService(userRepository);
     }
 
     public User getCurrentUser() {
