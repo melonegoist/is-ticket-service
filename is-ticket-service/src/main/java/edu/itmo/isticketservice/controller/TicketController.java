@@ -49,7 +49,6 @@ public class TicketController {
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         if (file.isEmpty()) {
-            System.out.println("here");
             return ResponseEntity.badRequest().build();
         }
 
@@ -61,7 +60,6 @@ public class TicketController {
 
             return ResponseEntity.status(HttpStatus.CREATED).body(importedTickets);
         } catch (IOException e) {
-            System.out.println("here" + e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
